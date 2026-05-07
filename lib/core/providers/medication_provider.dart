@@ -24,8 +24,8 @@ class MedicationListNotifier extends Notifier<List<Medication>> {
 
 final medicationListProvider =
     NotifierProvider<MedicationListNotifier, List<Medication>>(
-  MedicationListNotifier.new,
-);
+      MedicationListNotifier.new,
+    );
 
 /// Holds today's dose logs. Rebuilt when a dose is logged/changed.
 class DoseLogListNotifier extends Notifier<List<DoseLog>> {
@@ -49,8 +49,8 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
 
 final doseLogListProvider =
     NotifierProvider<DoseLogListNotifier, List<DoseLog>>(
-  DoseLogListNotifier.new,
-);
+      DoseLogListNotifier.new,
+    );
 
 /// All dose logs (for History screen).
 final allDoseLogsProvider = Provider<List<DoseLog>>((ref) {

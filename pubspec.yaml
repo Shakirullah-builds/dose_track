@@ -29,6 +29,12 @@ dependencies:
   # Percent indicator for adherence ring
   percent_indicator: ^4.2.5
 
+  # Scheduled local notifications
+  flutter_local_notifications: ^21.0.0
+
+  # Timezone-aware DateTime for zonedSchedule
+  timezone: ^0.11.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

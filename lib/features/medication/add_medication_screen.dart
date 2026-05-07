@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/hive_service.dart';
+import 'package:dose_tracker/core/services/notification_service.dart';
 import 'package:dose_tracker/core/theme/app_theme.dart';
 
 class AddMedicationScreen extends ConsumerStatefulWidget {
@@ -122,6 +123,9 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       );
 
       await ref.read(medicationListProvider.notifier).addMedication(med);
+
+      // Schedule a daily notification at the chosen time
+      await ref.read(notificationServiceProvider).scheduleDoseReminder(med);
 
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
