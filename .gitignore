@@ -44,10 +44,23 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# antigravity
+# AI related
 .agent/
 .gemini/
 /designs
+
+# iOS/macOS
+**/ios/Pods/
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+
+# Windows
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_plugin_registrant.cc
+
+# Linux
+**/linux/flutter/ephemeral/
+**/linux/flutter/generated_plugin_registrant.cc
 
 # Environment variables
 .env
