@@ -30,7 +30,7 @@ class CustomEmptyState extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               title,
-              //'No medications yet',
+              // 'No medications yet',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
