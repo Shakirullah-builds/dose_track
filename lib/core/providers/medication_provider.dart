@@ -42,6 +42,16 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
     state = HiveService.getDoseLogsForDate(DateTime.now());
   }
 
+  Future<void> deleteLog(String logId) async {
+    await HiveService.deleteDoseLog(logId);
+    state = HiveService.getDoseLogsForDate(DateTime.now());
+  }
+
+  Future<void> restoreLog(DoseLog log) async {
+    await HiveService.restoreDoseLog(log);
+    state = HiveService.getDoseLogsForDate(DateTime.now());
+  }
+
   void refresh() {
     state = HiveService.getDoseLogsForDate(DateTime.now());
   }

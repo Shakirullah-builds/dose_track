@@ -93,5 +93,13 @@ class HiveService {
     await _logBox.put(log.id, log);
   }
 
+  static Future<void> deleteDoseLog(String logId) async {
+    await _logBox.delete(logId);
+  }
+
+  static Future<void> restoreDoseLog(DoseLog log) async {
+    await _logBox.put(log.id, log);
+  }
+
   static String generateId() => _uuid.v4();
 }

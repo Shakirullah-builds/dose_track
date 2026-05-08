@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/theme/app_theme.dart';
+import 'package:dose_tracker/core/services/notification_service.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -59,7 +59,30 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
-                              (_, i) => _UpcomingCard(medication: upcoming[i]),
+                              (_, i) => _UpcomingCard(
+                                medication: upcoming[i],
+                                onDelete: () {
+                                  final deletedMed = upcoming[i];
+                                  ref.read(medicationListProvider.notifier).removeMedication(deletedMed.id);
+                                  ref.read(notificationServiceProvider).cancelReminder(deletedMed.id);
+
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      duration: const Duration(seconds: 3),
+                                      behavior: SnackBarBehavior.floating,
+                                      content: const Text('Medication deleted.'),
+                                      action: SnackBarAction(
+                                        label: 'UNDO',
+                                        onPressed: () async {
+                                          await ref.read(medicationListProvider.notifier).addMedication(deletedMed);
+                                          await ref.read(notificationServiceProvider).scheduleDoseReminder(deletedMed);
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                               childCount: upcoming.length,
                             ),
                           ),
@@ -77,6 +100,27 @@ class HomeScreen extends ConsumerWidget {
                               return _CompletedCard(
                                 medication: med,
                                 doseLog: log,
+                                onDelete: () {
+                                  final deletedMed = med;
+                                  ref.read(medicationListProvider.notifier).removeMedication(deletedMed.id);
+                                  ref.read(notificationServiceProvider).cancelReminder(deletedMed.id);
+
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      duration: const Duration(seconds: 3),
+                                      behavior: SnackBarBehavior.floating,
+                                      content: const Text('Medication deleted.'),
+                                      action: SnackBarAction(
+                                        label: 'UNDO',
+                                        onPressed: () async {
+                                          await ref.read(medicationListProvider.notifier).addMedication(deletedMed);
+                                          await ref.read(notificationServiceProvider).scheduleDoseReminder(deletedMed);
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             }, childCount: completed.length),
                           ),
@@ -230,12 +274,26 @@ class _SectionTitle extends StatelessWidget {
 
 class _UpcomingCard extends ConsumerWidget {
   final Medication medication;
-  const _UpcomingCard({required this.medication});
+  final VoidCallback onDelete;
+  const _UpcomingCard({required this.medication, required this.onDelete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    return Dismissible(
+      key: ValueKey('upcoming_${medication.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.missed,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete_outline, color: Colors.white),
+      ),
+      onDismissed: (_) => onDelete(),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBg,
@@ -331,6 +389,7 @@ class _UpcomingCard extends ConsumerWidget {
           ),
         ],
       ),
+      ),
     );
   }
 }
@@ -338,7 +397,8 @@ class _UpcomingCard extends ConsumerWidget {
 class _CompletedCard extends StatelessWidget {
   final Medication medication;
   final DoseLog doseLog;
-  const _CompletedCard({required this.medication, required this.doseLog});
+  final VoidCallback onDelete;
+  const _CompletedCard({required this.medication, required this.doseLog, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -346,8 +406,21 @@ class _CompletedCard extends StatelessWidget {
     final actionStr = doseLog.actionTime != null
         ? DateFormat('h:mm a').format(doseLog.actionTime!)
         : '';
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    return Dismissible(
+      key: ValueKey('completed_${medication.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.missed,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete_outline, color: Colors.white),
+      ),
+      onDismissed: (_) => onDelete(),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBg,
@@ -426,6 +499,7 @@ class _CompletedCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }

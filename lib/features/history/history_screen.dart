@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/constants/app_colors.dart'; 
+import 'package:dose_tracker/core/constants/app_colors.dart';
 
 /// History screen — shows all dose logs grouped by date.
 class HistoryScreen extends ConsumerWidget {
@@ -75,7 +75,7 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
-class _DateGroup extends StatelessWidget {
+class _DateGroup extends ConsumerWidget {
   final DateTime date;
   final List<DoseLog> logs;
   final Map<String, Medication> medMap;
@@ -87,7 +87,7 @@ class _DateGroup extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isToday = _isToday(date);
     final label = isToday ? 'Today' : DateFormat('EEEE, MMM d').format(date);
     final takenCount = logs.where((l) => l.status == 'taken').length;
@@ -121,7 +121,29 @@ class _DateGroup extends StatelessWidget {
         ),
         ...logs.map((log) {
           final med = medMap[log.medicationId];
-          return _HistoryTile(log: log, medication: med);
+          return _HistoryTile(
+            log: log,
+            medication: med,
+            onDelete: () {
+              final deletedLog = log;
+              ref.read(doseLogListProvider.notifier).deleteLog(deletedLog.id);
+
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  content: const Text('Dose log removed.'),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      ref.read(doseLogListProvider.notifier).restoreLog(deletedLog);
+                    },
+                  ),
+                ),
+              );
+            },
+          );
         }),
       ],
     );
@@ -136,7 +158,8 @@ class _DateGroup extends StatelessWidget {
 class _HistoryTile extends StatelessWidget {
   final DoseLog log;
   final Medication? medication;
-  const _HistoryTile({required this.log, this.medication});
+  final VoidCallback onDelete;
+  const _HistoryTile({required this.log, this.medication, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -146,24 +169,46 @@ class _HistoryTile extends StatelessWidget {
         ? DateFormat('h:mm a').format(log.actionTime!)
         : '';
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+    return Dismissible(
+      key: ValueKey('history_${log.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: AppColors.missed,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.undo, color: Colors.white),
+      ),
+      onDismissed: (_) => onDelete(),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.divider),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        //borderRadius: BorderRadius.circular(14),
+        //border: Border.all(color: AppColors.divider),
       ),
       child: Row(
         children: [
           Container(
             width: 40,
             height: 40,
+            //padding: ,
             decoration: BoxDecoration(
+              shape: BoxShape.circle,
               color: isTaken
                   ? AppColors.taken.withValues(alpha: 0.12)
                   : AppColors.missed.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              // borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               isTaken
@@ -219,6 +264,7 @@ class _HistoryTile extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
