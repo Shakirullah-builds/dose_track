@@ -63,24 +63,41 @@ class HomeScreen extends ConsumerWidget {
                                 medication: upcoming[i],
                                 onDelete: () {
                                   final deletedMed = upcoming[i];
-                                  ref.read(medicationListProvider.notifier).removeMedication(deletedMed.id);
-                                  ref.read(notificationServiceProvider).cancelReminder(deletedMed.id);
+                                  ref
+                                      .read(medicationListProvider.notifier)
+                                      .removeMedication(deletedMed.id);
+                                  ref
+                                      .read(notificationServiceProvider)
+                                      .cancelReminder(deletedMed.id);
 
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: const Duration(seconds: 3),
-                                      behavior: SnackBarBehavior.floating,
-                                      content: const Text('Medication deleted.'),
-                                      action: SnackBarAction(
-                                        label: 'UNDO',
-                                        onPressed: () async {
-                                          await ref.read(medicationListProvider.notifier).addMedication(deletedMed);
-                                          await ref.read(notificationServiceProvider).scheduleDoseReminder(deletedMed);
-                                        },
-                                      ),
+                                  final messenger = ScaffoldMessenger.of(context);
+                                  messenger.clearSnackBars();
+
+                                  final snackBar = SnackBar(
+                                    duration: const Duration(seconds: 4),
+                                    behavior: SnackBarBehavior.floating,
+                                    content: const Text('Medication deleted.'),
+                                    action: SnackBarAction(
+                                      label: 'UNDO',
+                                      onPressed: () async {
+                                        await ref
+                                            .read(medicationListProvider.notifier)
+                                            .addMedication(deletedMed);
+                                        await ref
+                                            .read(notificationServiceProvider)
+                                            .scheduleDoseReminder(deletedMed);
+                                      },
                                     ),
                                   );
+
+                                  messenger.showSnackBar(snackBar);
+
+                                  // THE OVERRIDE
+                                  Future.delayed(const Duration(seconds: 4), () {
+                                    if (context.mounted) {
+                                      messenger.hideCurrentSnackBar();
+                                    }
+                                  });
                                 },
                               ),
                               childCount: upcoming.length,
@@ -102,24 +119,41 @@ class HomeScreen extends ConsumerWidget {
                                 doseLog: log,
                                 onDelete: () {
                                   final deletedMed = med;
-                                  ref.read(medicationListProvider.notifier).removeMedication(deletedMed.id);
-                                  ref.read(notificationServiceProvider).cancelReminder(deletedMed.id);
+                                  ref
+                                      .read(medicationListProvider.notifier)
+                                      .removeMedication(deletedMed.id);
+                                  ref
+                                      .read(notificationServiceProvider)
+                                      .cancelReminder(deletedMed.id);
 
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: const Duration(seconds: 3),
-                                      behavior: SnackBarBehavior.floating,
-                                      content: const Text('Medication deleted.'),
-                                      action: SnackBarAction(
-                                        label: 'UNDO',
-                                        onPressed: () async {
-                                          await ref.read(medicationListProvider.notifier).addMedication(deletedMed);
-                                          await ref.read(notificationServiceProvider).scheduleDoseReminder(deletedMed);
-                                        },
-                                      ),
+                                  final messenger = ScaffoldMessenger.of(context);
+                                  messenger.clearSnackBars();
+
+                                  final snackBar = SnackBar(
+                                    duration: const Duration(seconds: 4),
+                                    behavior: SnackBarBehavior.floating,
+                                    content: const Text('Medication deleted.'),
+                                    action: SnackBarAction(
+                                      label: 'UNDO',
+                                      onPressed: () async {
+                                        await ref
+                                            .read(medicationListProvider.notifier)
+                                            .addMedication(deletedMed);
+                                        await ref
+                                            .read(notificationServiceProvider)
+                                            .scheduleDoseReminder(deletedMed);
+                                      },
                                     ),
                                   );
+
+                                  messenger.showSnackBar(snackBar);
+
+                                  // THE OVERRIDE
+                                  Future.delayed(const Duration(seconds: 4), () {
+                                    if (context.mounted) {
+                                      messenger.hideCurrentSnackBar();
+                                    }
+                                  });
                                 },
                               );
                             }, childCount: completed.length),
@@ -284,9 +318,7 @@ class _UpcomingCard extends ConsumerWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColors.missed,
-        ),
+        decoration: BoxDecoration(color: AppColors.missed),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         child: const Icon(Icons.delete_outline, color: Colors.white),
@@ -294,101 +326,106 @@ class _UpcomingCard extends ConsumerWidget {
       onDismissed: (_) => onDelete(),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        //borderRadius: BorderRadius.circular(16),
-        //border: Border.all(color: AppColors.divider),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.iconBg,
-                  //borderRadius: BorderRadius.circular(12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.cardBg,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          //borderRadius: BorderRadius.circular(16),
+          //border: Border.all(color: AppColors.divider),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.iconBg,
+                    //borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.medication_rounded,
+                    color: AppColors.primaryDark,
+                    size: 24,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.medication_rounded,
-                  color: AppColors.primaryDark,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          medication.name,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            medication.name,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                        ),
-                        Text(
-                          _fmt(medication.scheduledTime),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary.withValues(alpha: 0.8),
+                          Text(
+                            _fmt(medication.scheduledTime),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary.withValues(
+                                alpha: 0.8,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      _dosageLabel(medication),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
+                        ],
                       ),
-                    ),
-                  ],
+                      Text(
+                        _dosageLabel(medication),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: _ActionBtn(
-                  'Skipped',
-                  true,
-                  () => ref
-                      .read(doseLogListProvider.notifier)
-                      .logDose(medicationId: medication.id, status: 'skipped'),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionBtn(
+                    'Skipped',
+                    true,
+                    () => ref
+                        .read(doseLogListProvider.notifier)
+                        .logDose(
+                          medicationId: medication.id,
+                          status: 'skipped',
+                        ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _ActionBtn(
-                  'Taken',
-                  false,
-                  () => ref
-                      .read(doseLogListProvider.notifier)
-                      .logDose(medicationId: medication.id, status: 'taken'),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _ActionBtn(
+                    'Taken',
+                    false,
+                    () => ref
+                        .read(doseLogListProvider.notifier)
+                        .logDose(medicationId: medication.id, status: 'taken'),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -398,7 +435,11 @@ class _CompletedCard extends StatelessWidget {
   final Medication medication;
   final DoseLog doseLog;
   final VoidCallback onDelete;
-  const _CompletedCard({required this.medication, required this.doseLog, required this.onDelete});
+  const _CompletedCard({
+    required this.medication,
+    required this.doseLog,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -411,9 +452,7 @@ class _CompletedCard extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColors.missed,
-        ),
+        decoration: BoxDecoration(color: AppColors.missed),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         child: const Icon(Icons.delete_outline, color: Colors.white),
@@ -421,85 +460,85 @@ class _CompletedCard extends StatelessWidget {
       onDismissed: (_) => onDelete(),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isTaken
-                  ? AppColors.taken.withValues(alpha: 0.12)
-                  : AppColors.skipped.withValues(alpha: 0.5),
-              //borderRadius: BorderRadius.circular(12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.cardBg,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            child: Icon(
-              isTaken
-                  ? Icons.check_circle_rounded
-                  : Icons.remove_circle_rounded,
-              color: isTaken ? AppColors.taken : AppColors.skippedText,
-              size: 24,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isTaken
+                    ? AppColors.taken.withValues(alpha: 0.12)
+                    : AppColors.skipped.withValues(alpha: 0.5),
+                //borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                isTaken
+                    ? Icons.check_circle_rounded
+                    : Icons.remove_circle_rounded,
+                color: isTaken ? AppColors.taken : AppColors.skippedText,
+                size: 24,
+              ),
             ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    medication.name,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary.withValues(alpha: 0.7),
+                      decoration: isTaken ? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                  Text(
+                    _dosageLabel(medication),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  medication.name,
+                  _fmt(medication.scheduledTime),
                   style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary.withValues(alpha: 0.7),
-                    decoration: isTaken ? TextDecoration.lineThrough : null,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary.withValues(alpha: 0.6),
                   ),
                 ),
-                Text(
-                  _dosageLabel(medication),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+                if (actionStr.isNotEmpty)
+                  Text(
+                    '${isTaken ? "Taken" : "Skipped"} $actionStr',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isTaken ? AppColors.taken : AppColors.skippedText,
+                    ),
                   ),
-                ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                _fmt(medication.scheduledTime),
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary.withValues(alpha: 0.6),
-                ),
-              ),
-              if (actionStr.isNotEmpty)
-                Text(
-                  '${isTaken ? "Taken" : "Skipped"} $actionStr',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isTaken ? AppColors.taken : AppColors.skippedText,
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

@@ -128,20 +128,29 @@ class _DateGroup extends ConsumerWidget {
               final deletedLog = log;
               ref.read(doseLogListProvider.notifier).deleteLog(deletedLog.id);
 
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: const Duration(seconds: 3),
-                  behavior: SnackBarBehavior.floating,
-                  content: const Text('Dose log removed.'),
-                  action: SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {
-                      ref.read(doseLogListProvider.notifier).restoreLog(deletedLog);
-                    },
-                  ),
+              final messenger = ScaffoldMessenger.of(context);
+              messenger.clearSnackBars();
+
+              final snackBar = SnackBar(
+                duration: const Duration(seconds: 4),
+                behavior: SnackBarBehavior.floating,
+                content: const Text('Dose log removed.'),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    ref.read(doseLogListProvider.notifier).restoreLog(deletedLog);
+                  },
                 ),
               );
+
+              messenger.showSnackBar(snackBar);
+
+              // THE OVERRIDE
+              Future.delayed(const Duration(seconds: 4), () {
+                if (context.mounted) {
+                  messenger.hideCurrentSnackBar();
+                }
+              });
             },
           );
         }),
