@@ -34,6 +34,8 @@ dependencies:
 
   # Timezone-aware DateTime for zonedSchedule
   timezone: ^0.11.0
+  supabase_flutter: ^2.12.4
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:

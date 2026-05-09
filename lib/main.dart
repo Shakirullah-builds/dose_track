@@ -3,8 +3,10 @@ import 'package:dose_tracker/core/services/hive_service.dart';
 import 'package:dose_tracker/core/services/notification_service.dart';
 import 'package:dose_tracker/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -15,6 +17,14 @@ void main() async {
   // 1. Initialize Local Database
   await HiveService.init();
 
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
   // 2. Initialize Timezones (CRITICAL for exact background alarms)
   tz.initializeTimeZones();
 
