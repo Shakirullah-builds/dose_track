@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/services/hive_service.dart';
+import 'package:dose_tracker/core/services/supabase_sync_service.dart';
 
 /// Holds the full medication list. Rebuild when meds are added/removed.
 class MedicationListNotifier extends Notifier<List<Medication>> {
@@ -12,6 +13,8 @@ class MedicationListNotifier extends Notifier<List<Medication>> {
   Future<void> addMedication(Medication med) async {
     await HiveService.addMedication(med);
     state = [...state, med];
+    // Fire-and-forget background sync
+    ref.read(supabaseSyncServiceProvider).syncMedicationsUp();
   }
 
   Future<void> removeMedication(String id) async {
@@ -19,6 +22,8 @@ class MedicationListNotifier extends Notifier<List<Medication>> {
     state = state.where((m) => m.id != id).toList();
     // Also refresh dose logs since some were deleted
     ref.invalidate(doseLogListProvider);
+    // Fire-and-forget background sync
+    ref.read(supabaseSyncServiceProvider).syncMedicationsUp();
   }
 }
 
@@ -41,16 +46,22 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
     await HiveService.logDose(medicationId: medicationId, status: status);
     // Refresh to get the updated log with its generated ID from Hive, or we can just pull fresh
     state = [...HiveService.getDoseLogsForDate(DateTime.now())];
+    // Fire-and-forget background sync
+    ref.read(supabaseSyncServiceProvider).syncLogsUp();
   }
 
   Future<void> deleteLog(String logId) async {
     await HiveService.deleteDoseLog(logId);
     state = state.where((l) => l.id != logId).toList();
+    // Fire-and-forget background sync
+    ref.read(supabaseSyncServiceProvider).syncLogsUp();
   }
 
   Future<void> restoreLog(DoseLog log) async {
     await HiveService.restoreDoseLog(log);
     state = [...state, log];
+    // Fire-and-forget background sync
+    ref.read(supabaseSyncServiceProvider).syncLogsUp();
   }
 
   void refresh() {
