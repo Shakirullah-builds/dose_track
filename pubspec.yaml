@@ -45,6 +45,8 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   mocktail: ^1.0.5
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
 
 flutter:
   uses-material-design: true
@@ -52,3 +54,22 @@ flutter:
   # Assets declaration
   assets:
     - .env
+    - assets/images/
+
+# --- APP ICON CONFIGURATION ---
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  remove_alpha_ios: true # Apple crashes if app icons have transparent backgrounds
+  adaptive_icon_background: "#F5F7FA" # Change this hex to match your app's brand color
+  adaptive_icon_foreground: "assets/images/app_icon.png"
+
+# --- NATIVE SPLASH SCREEN CONFIGURATION ---
+flutter_native_splash:
+  color: "#16191C" # Change this hex to match your app's brand color
+  image: "assets/images/splash_icon.png"  
+  android_12:
+    image: "assets/images/splash_icon.png"
+    icon_background_color: "#F5F7FA"
+    color: "#F5F7FA"
