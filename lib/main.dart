@@ -7,12 +7,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:dose_tracker/firebase_options.dart';
+import 'package:dose_tracker/core/services/supabase_sync_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   // Ensure the native bridge is locked in before we run async code
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // 1. Initialize Local Database
   await HiveService.init();
@@ -59,6 +64,12 @@ void main() async {
       ),
     ),
   );
+
+  // Fire-and-forget the token sync so the UI doesn't freeze on boot!
+  Future.microtask(() async {
+    // Capture FCM token and sync it to Supabase
+    await SupabaseSyncService(Supabase.instance.client).syncDeviceToken();
+  });
 }
 
 /// Detects the device's UTC offset and sets tz.local to a matching timezone.
@@ -75,7 +86,9 @@ void _setLocalTimezone() {
     final locNow = tz.TZDateTime.now(location);
     if (locNow.timeZoneOffset == offset) {
       tz.setLocalLocation(location);
-      debugPrint('🕐 Timezone set to: ${location.name} (UTC${offset.isNegative ? "" : "+"}${offset.inHours})');
+      debugPrint(
+        '🕐 Timezone set to: ${location.name} (UTC${offset.isNegative ? "" : "+"}${offset.inHours})',
+      );
       return;
     }
   }
