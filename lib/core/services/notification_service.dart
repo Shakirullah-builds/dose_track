@@ -80,6 +80,7 @@ class NotificationService {
         badge: true,
         sound: true,
       );
+      
       return granted ?? false;
     }
 
@@ -96,42 +97,8 @@ class NotificationService {
   /// The notification ID is derived from the medication's UUID hash so each
   /// med gets a unique, stable ID we can cancel later.
   Future<void> scheduleDoseReminder(Medication med) async {
-    final scheduledTZ = _nextInstanceOfTime(med.scheduledTime);
-
-   final androidDetails = const AndroidNotificationDetails(
-      'dose_reminders', // channel ID
-      'Dose Reminders', // channel name
-      channelDescription: 'Daily medication dose reminders',
-      importance: Importance.max, // UPGRADED from high
-      priority: Priority.max,     // UPGRADED from high
-      visibility: NotificationVisibility.public, // NEW: Forces it onto the lock screen
-      category: AndroidNotificationCategory.alarm, // NEW: Tells Android this is a medical alarm, not a text
-      playSound: true,
-      enableVibration: true,
-      fullScreenIntent: true, // NEW: Wakes the device up
-    );
-
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-
-    final details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
-    await _plugin.zonedSchedule(
-      id: _notificationId(med.id),
-      title: '💊 Time for ${med.name}',
-      body:
-          '${med.dosage} ${med.unit} — ${med.instructions ?? "Take your dose"}',
-      scheduledDate: scheduledTZ, // ✅ correct name
-      notificationDetails: details, // ✅ correct name
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
+    // DEPRECATED: Local scheduling has been replaced by Supabase Edge Functions + FCM.
+    // The scheduling logic is removed to prevent conflicts with the new push engine.
   }
 
   // ── Cancellation ────────────────────────────────────────────────────
@@ -141,7 +108,12 @@ class NotificationService {
     await _plugin.cancel(id: _notificationId(medicationId));
   }
 
-  /// Cancel all scheduled reminders.
+  /// Cancel all scheduled local alarms.
+  Future<void> cancelAllLocalAlarms() async {
+    await _plugin.cancelAll();
+  }
+
+  /// Cancel all scheduled reminders (legacy).
   Future<void> cancelAll() async {
     await _plugin.cancelAll();
   }

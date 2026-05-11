@@ -48,6 +48,9 @@ void main() async {
   final notificationService = NotificationService(plugin);
   await notificationService.init();
 
+  // Wipe legacy alarms to prevent conflicts with new push system
+  await notificationService.cancelAllLocalAlarms();
+
   // 5. Request permissions (Android 13+ requires POST_NOTIFICATIONS)
   await notificationService.requestPermissions();
 

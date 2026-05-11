@@ -124,9 +124,6 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
 
       await ref.read(medicationListProvider.notifier).addMedication(med);
 
-      // Schedule a daily notification at the chosen time
-      await ref.read(notificationServiceProvider).scheduleDoseReminder(med);
-
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
