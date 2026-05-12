@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
 import 'package:dose_tracker/core/constants/app_colors.dart';
 
@@ -93,7 +95,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Icons.open_in_new,
                 color: AppColors.textSecondary,
               ),
-              onTap: () {},
+              onTap: () {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (context) => CupertinoAlertDialog(
+                    title: const CustomText(
+                      textAlign: TextAlign.center,
+                      'External Link',
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    content: const Padding(
+                      padding: EdgeInsets.only(top: 8.0),
+                      child: CustomText(
+                        textAlign: TextAlign.center,
+                        'You are leaving the app to view our Privacy Policy in a secure browser. Continue?',
+                        fontSize: 13,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const CustomText(
+                          'Cancel',
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      CupertinoDialogAction(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          try {
+                            final uri = Uri.parse(
+                              'https://docs.google.com/document/d/e/2PACX-1vS4aYvV4WILUamUkcJRdMoqRjoNugAAHcexCH8HCDH5YYwkjNBF1vYBrUc4UX_oPNaWtC9JhLmXSI0J/pub',
+                            );
+                            await launchUrl(uri);
+                          } catch (e) {
+                            debugPrint('Error launching URL: $e');
+                          }
+                        },
+                        child: const CustomText(
+                          'Open Browser',
+                          fontSize: 14,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
 
