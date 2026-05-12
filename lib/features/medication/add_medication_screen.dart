@@ -333,9 +333,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
               unit,
               fontSize: 15,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              color: selected
-                  ? AppColors.primaryDark
-                  : AppColors.textSecondary,
+              color: selected ? AppColors.primaryDark : AppColors.textSecondary,
             ),
           ),
         ),
