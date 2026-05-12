@@ -34,8 +34,9 @@ class HiveService {
   static Future<void> deleteMedication(String id) async {
     await _medBox.delete(id);
     // Also remove associated logs
-    final logsToDelete =
-        _logBox.values.where((log) => log.medicationId == id).toList();
+    final logsToDelete = _logBox.values
+        .where((log) => log.medicationId == id)
+        .toList();
     for (final log in logsToDelete) {
       await log.delete();
     }

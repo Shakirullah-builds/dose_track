@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:dose_tracker/core/services/hive_service.dart';
 import 'package:dose_tracker/app_shell.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
 import 'package:dose_tracker/core/constants/app_colors.dart';
@@ -144,6 +144,45 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 color: Colors.red,
               ),
               onTap: () {
+                final hasMeds = HiveService.getAllMedications().isNotEmpty;
+                final hasLogs = HiveService.getAllDoseLogs().isNotEmpty;
+
+                if (!hasMeds && !hasLogs) {
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) => CupertinoAlertDialog(
+                      title: const CustomText(
+                        textAlign: TextAlign.center,
+                        'Nothing to Wipe',
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                      content: const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          'Your database is currently empty. There is no medication data or dose history to wipe.',
+                          fontSize: 13,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      actions: [
+                        CupertinoDialogAction(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const CustomText(
+                            'OK',
+                            fontSize: 14,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
                 _showCustomCupertinoDialog(
                   context: context,
                   title: 'Are you sure?',
@@ -166,7 +205,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       }
 
                       // Step B (Local Wipe)
-                      await Hive.deleteFromDisk();
+                      await HiveService.clearAll();
 
                       // Step C (Identity Wipe)
                       await supabase.auth.signOut();
