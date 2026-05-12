@@ -6,6 +6,7 @@ import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/hive_service.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
+import 'package:dose_tracker/core/widgets/custom_text_field.dart';
 
 class AddMedicationScreen extends ConsumerStatefulWidget {
   const AddMedicationScreen({super.key});
@@ -171,12 +172,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                   // ── Medication Name ──
                   _label('MEDICATION NAME'),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomTextField(
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g., Amoxicillin',
-                    ),
+                    hintText: 'e.g., Amoxicillin',
                   ),
 
                   const SizedBox(height: 24),
@@ -188,10 +187,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                     children: [
                       Expanded(
                         flex: 3,
-                        child: TextField(
+                        child: CustomTextField(
                           controller: _dosageController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(hintText: '0'),
+                          hintText: '0',
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -249,12 +248,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                   // ── Instructions ──
                   _label('INSTRUCTIONS (OPTIONAL)'),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomTextField(
                     controller: _instructionsController,
                     maxLines: 4,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g., Take with food',
-                    ),
+                    hintText: 'e.g., Take with food',
                   ),
                 ],
               ),
