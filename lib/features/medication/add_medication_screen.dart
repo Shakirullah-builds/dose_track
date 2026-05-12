@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/core/services/notification_service.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
 
 class AddMedicationScreen extends ConsumerStatefulWidget {
