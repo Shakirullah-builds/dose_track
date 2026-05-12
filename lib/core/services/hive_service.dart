@@ -112,5 +112,10 @@ class HiveService {
     await _logBox.putAll(map);
   }
 
+  static Future<void> clearAll() async {
+    await _medBox.clear();
+    await _logBox.clear();
+  }
+
   static String generateId() => _uuid.v4();
 }

@@ -357,14 +357,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             setStateDialog(() => isLoading = false);
                           }
                         },
-                  child: CustomText(
-                    (isLoading && loadingActionText != null)
-                        ? loadingActionText
-                        : actionText,
-                    fontSize: 14,
-                    color: actionColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  child: (isLoading && loadingActionText != null)
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: 13,
+                              height: 13,
+                              child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color>(Colors.red),),
+                            ),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              loadingActionText,
+                              fontSize: 14,
+                              color: actionColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ],
+                        )
+                      : CustomText(
+                          actionText,
+                          fontSize: 14,
+                          color: actionColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                 ),
               ],
             );

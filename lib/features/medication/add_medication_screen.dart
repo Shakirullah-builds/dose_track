@@ -103,6 +103,18 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       return;
     }
 
+    final now = TimeOfDay.now();
+    if (_selectedTime.hour < now.hour ||
+        (_selectedTime.hour == now.hour && _selectedTime.minute <= now.minute)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: CustomText('Please select a future time so the alarm can trigger properly.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final dosage = double.tryParse(_dosageController.text.trim()) ?? 0;
 
     setState(() => _saving = true);
