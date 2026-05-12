@@ -62,14 +62,14 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/images/app_icon.png"
   remove_alpha_ios: true # Apple crashes if app icons have transparent backgrounds
-  adaptive_icon_background: "#F5F7FA" # Change this hex to match your app's brand color
+  adaptive_icon_background: "#FFFFFF" # Change this hex to match your app's brand color
   adaptive_icon_foreground: "assets/images/app_icon.png"
 
 # --- NATIVE SPLASH SCREEN CONFIGURATION ---
 flutter_native_splash:
-  color: "#16191C" # Change this hex to match your app's brand color
+  color: "#FFFFFF" # Change this hex to match your app's brand color
   image: "assets/images/splash_icon.png"  
   android_12:
     image: "assets/images/splash_icon.png"
-    icon_background_color: "#F5F7FA"
-    color: "#F5F7FA"
+    icon_background_color: "#FFFFFF"
+    color: "#FFFFFF"
