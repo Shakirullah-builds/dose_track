@@ -144,6 +144,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
@@ -151,7 +152,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
         ),
         title: const CustomText(
           'New Medication',
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),

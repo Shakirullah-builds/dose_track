@@ -17,10 +17,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: AppColors.scaffoldBg,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        centerTitle: true,
         title: const CustomText(
           'Settings',
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),
@@ -32,119 +34,134 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 24, 20, 8),
-            child: CustomText(
-              'Preferences',
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.5,
+          // Section 1 - Preferences
+          _buildSectionTitle('Preferences', color: AppColors.textPrimary),
+          _buildListTileContainer(
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              leading: _buildLeadingIcon(
+                Icons.notifications_none,
+                AppColors.scaffoldBg,
+                AppColors.textPrimary,
+              ),
+              title: const CustomText(
+                'Notifications',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+              subtitle: const CustomText(
+                'Pause all medication reminders',
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+              trailing: Switch(
+                value: _notificationsEnabled,
+                activeThumbColor: AppColors.primary,
+                onChanged: (val) {
+                  setState(() {
+                    _notificationsEnabled = val;
+                  });
+                },
+              ),
             ),
           ),
-          ListTile(
-            title: const CustomText(
-              'Notifications',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+
+          // Section 2 - Legal
+          _buildSectionTitle('Legal', color: AppColors.textPrimary),
+          _buildListTileContainer(
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              leading: _buildLeadingIcon(
+                Icons.privacy_tip_outlined,
+                AppColors.scaffoldBg,
+                AppColors.textPrimary,
+              ),
+              title: const CustomText(
+                'Privacy Policy',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+              trailing: const Icon(
+                Icons.open_in_new,
+                color: AppColors.textSecondary,
+              ),
+              onTap: () {},
             ),
-            subtitle: const CustomText(
-              'Pause all medication reminders',
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-            trailing: Switch(
-              value: _notificationsEnabled,
-              activeColor: AppColors.primary,
-              onChanged: (val) {
-                setState(() {
-                  _notificationsEnabled = val;
-                });
+          ),
+
+          // Section 3 - Danger Zone
+          _buildSectionTitle('Danger Zone', color: Colors.red),
+          _buildListTileContainer(
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              leading: _buildLeadingIcon(
+                Icons.delete_forever,
+                Colors.red.withValues(alpha: 0.1),
+                Colors.red,
+              ),
+              title: const CustomText(
+                'Wipe My Data',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.red,
+              ),
+              //trailing: const Icon(Icons.delete_forever, color: Colors.red),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const CustomText(
+                      'Are you sure?',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                    content: const CustomText(
+                      'This will permanently delete all your medication data from this device and the cloud.',
+                      fontSize: 15,
+                      color: AppColors.textSecondary,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const CustomText(
+                          'Cancel',
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // TODO: Implement Supabase wipe and sign out
+                          Navigator.of(context).pop();
+                        },
+                        child: const CustomText(
+                          'Wipe Data',
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ),
-          const Divider(height: 1),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 24, 20, 8),
-            child: CustomText(
-              'Legal',
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.5,
-            ),
-          ),
-          ListTile(
-            title: const CustomText(
-              'Privacy Policy',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-            trailing: const Icon(Icons.open_in_new, color: AppColors.textSecondary),
-            onTap: () {},
-          ),
-          const Divider(height: 1),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 24, 20, 8),
-            child: CustomText(
-              'Danger Zone',
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.5,
-            ),
-          ),
-          ListTile(
-            title: const CustomText(
-              'Wipe My Data',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.red,
-            ),
-            trailing: const Icon(Icons.delete_forever, color: Colors.red),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const CustomText(
-                    'Are you sure?',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                  content: const CustomText(
-                    'This will permanently delete all your medication data from this device and the cloud.',
-                    fontSize: 15,
-                    color: AppColors.textSecondary,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const CustomText(
-                        'Cancel',
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // TODO: Implement Supabase wipe and sign out
-                        Navigator.of(context).pop();
-                      },
-                      child: const CustomText(
-                        'Wipe Data',
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 40),
+
+          const SizedBox(height: 30),
+
+          // Footer
           const Center(
             child: CustomText(
               'DoseTrack v1.0.0',
@@ -152,9 +169,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 48),
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, {required Color color}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 32, 20, 12),
+      child: CustomText(
+        title,
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: color,
+      ),
+    );
+  }
+
+  Widget _buildListTileContainer({required Widget child}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: const Border(
+          top: BorderSide(color: AppColors.divider),
+          bottom: BorderSide(color: AppColors.divider),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.white,
+        child: child,
+      ),
+    );
+  }
+
+  Widget _buildLeadingIcon(IconData icon, Color bgColor, Color iconColor) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(icon, color: iconColor),
     );
   }
 }
