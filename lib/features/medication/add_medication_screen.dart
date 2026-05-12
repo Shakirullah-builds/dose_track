@@ -6,6 +6,7 @@ import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/hive_service.dart';
 import 'package:dose_tracker/core/services/notification_service.dart';
+import 'package:dose_tracker/core/widgets/custom_text.dart';
 
 class AddMedicationScreen extends ConsumerStatefulWidget {
   const AddMedicationScreen({super.key});
@@ -54,14 +55,14 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                 children: [
                   CupertinoButton(
                     padding: EdgeInsets.zero,
-                    child: const Text('Cancel'),
+                    child: const CustomText('Cancel'),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   CupertinoButton(
                     padding: EdgeInsets.zero,
-                    child: const Text(
+                    child: const CustomText(
                       'Done',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w600,
                     ),
                     onPressed: () {
                       setState(() => _selectedTime = tempTime);
@@ -97,7 +98,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a medication name')),
+        const SnackBar(content: CustomText('Please enter a medication name')),
       );
       return;
     }
@@ -129,7 +130,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error saving: $e')));
+        ).showSnackBar(SnackBar(content: CustomText('Error saving: $e')));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -148,13 +149,11 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: const CustomText(
           'New Medication',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-          ),
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary,
         ),
         elevation: 0,
         bottom: PreferredSize(
@@ -231,12 +230,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          CustomText(
                             timeStr,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: AppColors.textPrimary,
-                            ),
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
                           ),
                           const Icon(
                             Icons.access_time,
@@ -293,7 +290,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Save Medication'),
+                    : const CustomText('Save Medication'),
               ),
             ),
           ),
@@ -303,14 +300,12 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
   }
 
   Widget _label(String text) {
-    return Text(
+    return CustomText(
       text,
-      style: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textSecondary,
-        letterSpacing: 1.2,
-      ),
+      fontSize: 12,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textSecondary,
+      letterSpacing: 1.2,
     );
   }
 
@@ -335,15 +330,13 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                 : null,
           ),
           child: Center(
-            child: Text(
+            child: CustomText(
               unit,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primaryDark
-                    : AppColors.textSecondary,
-              ),
+              fontSize: 15,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: selected
+                  ? AppColors.primaryDark
+                  : AppColors.textSecondary,
             ),
           ),
         ),

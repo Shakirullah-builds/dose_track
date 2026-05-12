@@ -6,7 +6,7 @@ import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/constants/app_colors.dart';
 import 'package:dose_tracker/core/services/supabase_sync_service.dart';
-
+import 'package:dose_tracker/core/widgets/custom_text.dart';
 /// History screen — shows all dose logs grouped by date.
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -40,13 +40,11 @@ class HistoryScreen extends ConsumerWidget {
           children: [
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
-              child: Text(
+              child: CustomText(
                 'History',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                ),
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
               ),
             ),
             Expanded(
@@ -58,7 +56,7 @@ class HistoryScreen extends ConsumerWidget {
                             children: [
                               CircularProgressIndicator(),
                               SizedBox(height: 16),
-                              Text('Restoring data...'),
+                              CustomText('Restoring data...'),
                             ],
                           ),
                         )
@@ -88,7 +86,7 @@ class HistoryScreen extends ConsumerWidget {
 
                             final snackBar = SnackBar(
                               duration: const Duration(seconds: 3),
-                              content: const Text('Dose log removed.'),
+                              content: const CustomText('Dose log removed.'),
                               action: SnackBarAction(
                                 label: 'UNDO',
                                 onPressed: () {
@@ -146,21 +144,17 @@ class _DateGroup extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              CustomText(
                 label,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
               ),
-              Text(
+              CustomText(
                 '$takenCount/${logs.length} taken',
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
               ),
             ],
           ),
@@ -253,21 +247,17 @@ class _HistoryTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  CustomText(
                     name,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
                   ),
                   if (medication != null)
-                    Text(
+                    CustomText(
                       '${medication!.dosage.truncateToDouble() == medication!.dosage ? medication!.dosage.toInt() : medication!.dosage}${medication!.unit}',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
                     ),
                 ],
               ),
@@ -275,21 +265,17 @@ class _HistoryTile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
+                CustomText(
                   isTaken ? 'Taken' : 'Skipped',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: isTaken ? AppColors.taken : AppColors.skippedText,
-                  ),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isTaken ? AppColors.taken : AppColors.skippedText,
                 ),
                 if (timeStr.isNotEmpty)
-                  Text(
+                  CustomText(
                     timeStr,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
                   ),
               ],
             ),

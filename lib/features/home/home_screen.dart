@@ -8,7 +8,7 @@ import 'package:dose_tracker/core/models/medication.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/notification_service.dart';
 import 'package:dose_tracker/core/services/supabase_sync_service.dart';
-
+import 'package:dose_tracker/core/widgets/custom_text.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -47,7 +47,7 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         CircularProgressIndicator(),
                         SizedBox(height: 16),
-                        Text('Restoring data...'),
+                        CustomText('Restoring data...'),
                       ],
                     ),
                   )
@@ -89,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
                                   final snackBar = SnackBar(
                                     duration: const Duration(seconds: 3),
                                     //behavior: SnackBarBehavior.floating,
-                                    content: const Text('Medication deleted.'),
+                                    content: const CustomText('Medication deleted.'),
                                     action: SnackBarAction(
                                       label: 'UNDO',
                                       onPressed: () async {
@@ -145,7 +145,7 @@ class HomeScreen extends ConsumerWidget {
                                   final snackBar = SnackBar(
                                     duration: const Duration(seconds: 3),
                                    // behavior: SnackBarBehavior.floating,
-                                    content: const Text('Medication deleted.'),
+                                    content: const CustomText('Medication deleted.'),
                                     action: SnackBarAction(
                                       label: 'UNDO',
                                       onPressed: () async {
@@ -214,21 +214,17 @@ class _Header extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    const CustomText(
                       'Today',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
                     ),
-                    Text(
+                    CustomText(
                       DateFormat('EEEE, MMM d').format(now),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        color: AppColors.textSecondary,
-                      ),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: AppColors.textSecondary,
                     ),
                   ],
                 ),
@@ -255,22 +251,18 @@ class _Header extends StatelessWidget {
                 center: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    CustomText(
                       '${(adherence * 100).round()}%',
-                      style: const TextStyle(
-                        fontSize: 33,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
+                      fontSize: 33,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
                     ),
-                    const Text(
+                    const CustomText(
                       'ADHERENCE',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                        letterSpacing: 1.2,
-                      ),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                      letterSpacing: 1.2,
                     ),
                   ],
                 ),
@@ -283,13 +275,11 @@ class _Header extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Center(
-              child: Text(
+              child: CustomText(
                 '$takenCount of $totalCount medications taken',
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
-                ),
+                fontSize: 15,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -306,14 +296,12 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Text(
+      child: CustomText(
         title,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textSecondary,
-          letterSpacing: 1.5,
-        ),
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textSecondary,
+        letterSpacing: 1.5,
       ),
     );
   }
@@ -378,32 +366,26 @@ class _UpcomingCard extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          CustomText(
                             medication.name,
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
                           ),
-                          Text(
+                          CustomText(
                             _fmt(medication.scheduledTime),
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary.withValues(
-                                alpha: 0.8,
-                              ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary.withValues(
+                              alpha: 0.8,
                             ),
                           ),
                         ],
                       ),
-                      Text(
+                      CustomText(
                         _dosageLabel(medication),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                        ),
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
                       ),
                     ],
                   ),
@@ -509,21 +491,17 @@ class _CompletedCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  CustomText(
                     medication.name,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary.withValues(alpha: 0.7),
-                      decoration: isTaken ? TextDecoration.lineThrough : null,
-                    ),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary.withValues(alpha: 0.7),
+                    decoration: isTaken ? TextDecoration.lineThrough : null,
                   ),
-                  Text(
+                  CustomText(
                     _dosageLabel(medication),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),
@@ -531,22 +509,18 @@ class _CompletedCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
+                CustomText(
                   _fmt(medication.scheduledTime),
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary.withValues(alpha: 0.6),
-                  ),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary.withValues(alpha: 0.6),
                 ),
                 if (actionStr.isNotEmpty)
-                  Text(
+                  CustomText(
                     '${isTaken ? "Taken" : "Skipped"} $actionStr',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isTaken ? AppColors.taken : AppColors.skippedText,
-                    ),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: isTaken ? AppColors.taken : AppColors.skippedText,
                   ),
               ],
             ),
@@ -582,13 +556,11 @@ class _ActionBtn extends StatelessWidget {
                 const Icon(Icons.check, size: 18, color: AppColors.taken),
                 const SizedBox(width: 6),
               ],
-              Text(
+              CustomText(
                 label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: isSkip ? AppColors.skippedText : AppColors.taken,
-                ),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isSkip ? AppColors.skippedText : AppColors.taken,
               ),
             ],
           ),

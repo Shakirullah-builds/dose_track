@@ -1,5 +1,6 @@
 import 'package:dose_tracker/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:dose_tracker/core/widgets/custom_text.dart';
 
 class CustomEmptyState extends StatelessWidget {
   final String title;
@@ -21,19 +22,18 @@ class CustomEmptyState extends StatelessWidget {
               color: AppColors.textHint.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 24),
-            Text(
+            CustomText(
               title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
             const SizedBox(height: 8),
-            Text(
+            CustomText(
               description,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+              fontSize: 15,
+              color: AppColors.textSecondary,
             ),
           ],
         ),

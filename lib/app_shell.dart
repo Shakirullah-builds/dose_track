@@ -5,6 +5,7 @@ import 'package:dose_tracker/features/home/home_screen.dart';
 import 'package:dose_tracker/features/history/history_screen.dart';
 import 'package:dose_tracker/features/medication/add_medication_screen.dart';
 import 'package:dose_tracker/core/services/supabase_sync_service.dart';
+import 'package:dose_tracker/core/widgets/custom_text.dart';
 
 /// The main app shell — hosts bottom nav, FAB, and screen switching.
 class AppShell extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         onError: (message) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message), duration: const Duration(seconds: 3)),
+              SnackBar(content: CustomText(message), duration: const Duration(seconds: 3)),
             );
           }
         },
