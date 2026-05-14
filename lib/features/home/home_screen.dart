@@ -20,14 +20,15 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
   bool _hasNotificationPermission = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkPermissions();
+    _initialPermissionRequest();
   }
 
   @override
@@ -39,16 +40,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _checkPermissions();
+      // Quietly check the status. NEVER call requestPermission() in here!
+      _quietlyCheckStatus();
     }
   }
 
-  Future<void> _checkPermissions() async {
+  // Called ONLY once when the screen loads to trigger the actual OS popup
+  Future<void> _initialPermissionRequest() async {
     await FirebaseMessaging.instance.requestPermission();
+    await _quietlyCheckStatus();
+  }
+
+  // Safe to call anytime. It just reads the boolean status without waking up the OS dialog.
+  Future<void> _quietlyCheckStatus() async {
     final status = await Permission.notification.status;
     if (mounted) {
       setState(() {
-        _hasNotificationPermission = !(status.isDenied || status.isPermanentlyDenied);
+        // If it's denied or permanently denied, we show the banner (false). Otherwise, hide it (true).
+        _hasNotificationPermission =
+            !(status.isDenied || status.isPermanentlyDenied);
       });
     }
   }
@@ -85,10 +95,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             if (!_hasNotificationPermission)
               Container(
                 color: Colors.orange.shade50,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.warning_amber_rounded, color: Colors.orange.shade800),
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: Colors.orange.shade800,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -108,11 +124,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                         ],
                       ),
                     ),
-                    TextButton(
-                      onPressed: () async {
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () async {
                         await openAppSettings();
                       },
-                      child: const CustomText('Fix'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 13,
+                          vertical: 11,
+                        ),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.orange.shade100,
+                        ),
+                        child: CustomText(
+                            'Fix',
+                            color: Colors.orange.shade900,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                      ),
                     ),
                   ],
                 ),
@@ -138,144 +170,162 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                           ))
                   : Column(
                       children: [
-                  Header(
-                    adherence: adherence,
-                    takenCount: takenCount,
-                    totalCount: totalMeds,
-                  ),
-                  Expanded(
-                    child: CustomScrollView(
-                      slivers: [
-                        if (upcoming.isNotEmpty) ...[
-                          SliverToBoxAdapter(child: _sectionTitle('UPCOMING')),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (_, i) => UpcomingCard(
-                                medication: upcoming[i],
-                                onDelete: () {
-                                  final deletedMed = upcoming[i];
-                                  ref
-                                      .read(medicationListProvider.notifier)
-                                      .removeMedication(deletedMed.id);
-                                  ref
-                                      .read(notificationServiceProvider)
-                                      .cancelReminder(deletedMed.id);
-
-                                  final messenger = ScaffoldMessenger.of(
-                                    context,
-                                  );
-                                  messenger.clearSnackBars();
-
-                                  final snackBar = SnackBar(
-                                    duration: const Duration(seconds: 3),
-                                    //behavior: SnackBarBehavior.floating,
-                                    content: const CustomText(
-                                      'Medication deleted.',
-                                    ),
-                                    action: SnackBarAction(
-                                      label: 'UNDO',
-                                      onPressed: () async {
-                                        await ref
+                        Header(
+                          adherence: adherence,
+                          takenCount: takenCount,
+                          totalCount: totalMeds,
+                        ),
+                        Expanded(
+                          child: CustomScrollView(
+                            slivers: [
+                              if (upcoming.isNotEmpty) ...[
+                                SliverToBoxAdapter(
+                                  child: _sectionTitle('UPCOMING'),
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (_, i) => UpcomingCard(
+                                      medication: upcoming[i],
+                                      onDelete: () {
+                                        final deletedMed = upcoming[i];
+                                        ref
                                             .read(
                                               medicationListProvider.notifier,
                                             )
-                                            .addMedication(deletedMed);
-                                        await ref
+                                            .removeMedication(deletedMed.id);
+                                        ref
                                             .read(notificationServiceProvider)
-                                            .scheduleDoseReminder(deletedMed);
+                                            .cancelReminder(deletedMed.id);
+
+                                        final messenger = ScaffoldMessenger.of(
+                                          context,
+                                        );
+                                        messenger.clearSnackBars();
+
+                                        final snackBar = SnackBar(
+                                          duration: const Duration(seconds: 3),
+                                          //behavior: SnackBarBehavior.floating,
+                                          content: const CustomText(
+                                            'Medication deleted.',
+                                          ),
+                                          action: SnackBarAction(
+                                            label: 'UNDO',
+                                            onPressed: () async {
+                                              await ref
+                                                  .read(
+                                                    medicationListProvider
+                                                        .notifier,
+                                                  )
+                                                  .addMedication(deletedMed);
+                                              await ref
+                                                  .read(
+                                                    notificationServiceProvider,
+                                                  )
+                                                  .scheduleDoseReminder(
+                                                    deletedMed,
+                                                  );
+                                            },
+                                          ),
+                                        );
+
+                                        final controller = messenger
+                                            .showSnackBar(snackBar);
+
+                                        // THE OVERRIDE
+                                        Future.delayed(
+                                          const Duration(seconds: 3),
+                                          () {
+                                            try {
+                                              controller.close();
+                                            } catch (_) {}
+                                          },
+                                        );
                                       },
                                     ),
-                                  );
+                                    childCount: upcoming.length,
+                                  ),
+                                ),
+                              ],
+                              if (completed.isNotEmpty) ...[
+                                SliverToBoxAdapter(
+                                  child: _sectionTitle('COMPLETED'),
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate((_, i) {
+                                    final med = completed[i];
+                                    final log = doseLogs.firstWhere(
+                                      (l) => l.medicationId == med.id,
+                                    );
+                                    return CompletedCard(
+                                      medication: med,
+                                      doseLog: log,
+                                      onDelete: () {
+                                        final deletedMed = med;
+                                        ref
+                                            .read(
+                                              medicationListProvider.notifier,
+                                            )
+                                            .removeMedication(deletedMed.id);
+                                        ref
+                                            .read(notificationServiceProvider)
+                                            .cancelReminder(deletedMed.id);
 
-                                  final controller = messenger.showSnackBar(
-                                    snackBar,
-                                  );
+                                        final messenger = ScaffoldMessenger.of(
+                                          context,
+                                        );
+                                        messenger.clearSnackBars();
 
-                                  // THE OVERRIDE
-                                  Future.delayed(
-                                    const Duration(seconds: 3),
-                                    () {
-                                      try {
-                                        controller.close();
-                                      } catch (_) {}
-                                    },
-                                  );
-                                },
+                                        final snackBar = SnackBar(
+                                          duration: const Duration(seconds: 3),
+                                          // behavior: SnackBarBehavior.floating,
+                                          content: const CustomText(
+                                            'Medication deleted.',
+                                          ),
+                                          action: SnackBarAction(
+                                            label: 'UNDO',
+                                            onPressed: () async {
+                                              await ref
+                                                  .read(
+                                                    medicationListProvider
+                                                        .notifier,
+                                                  )
+                                                  .addMedication(deletedMed);
+                                              await ref
+                                                  .read(
+                                                    notificationServiceProvider,
+                                                  )
+                                                  .scheduleDoseReminder(
+                                                    deletedMed,
+                                                  );
+                                            },
+                                          ),
+                                        );
+
+                                        final controller = messenger
+                                            .showSnackBar(snackBar);
+
+                                        // THE OVERRIDE
+                                        Future.delayed(
+                                          const Duration(seconds: 3),
+                                          () {
+                                            try {
+                                              controller.close();
+                                            } catch (_) {}
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }, childCount: completed.length),
+                                ),
+                              ],
+                              const SliverToBoxAdapter(
+                                child: SizedBox(height: 100),
                               ),
-                              childCount: upcoming.length,
-                            ),
+                            ],
                           ),
-                        ],
-                        if (completed.isNotEmpty) ...[
-                          SliverToBoxAdapter(child: _sectionTitle('COMPLETED')),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate((_, i) {
-                              final med = completed[i];
-                              final log = doseLogs.firstWhere(
-                                (l) => l.medicationId == med.id,
-                              );
-                              return CompletedCard(
-                                medication: med,
-                                doseLog: log,
-                                onDelete: () {
-                                  final deletedMed = med;
-                                  ref
-                                      .read(medicationListProvider.notifier)
-                                      .removeMedication(deletedMed.id);
-                                  ref
-                                      .read(notificationServiceProvider)
-                                      .cancelReminder(deletedMed.id);
-
-                                  final messenger = ScaffoldMessenger.of(
-                                    context,
-                                  );
-                                  messenger.clearSnackBars();
-
-                                  final snackBar = SnackBar(
-                                    duration: const Duration(seconds: 3),
-                                    // behavior: SnackBarBehavior.floating,
-                                    content: const CustomText(
-                                      'Medication deleted.',
-                                    ),
-                                    action: SnackBarAction(
-                                      label: 'UNDO',
-                                      onPressed: () async {
-                                        await ref
-                                            .read(
-                                              medicationListProvider.notifier,
-                                            )
-                                            .addMedication(deletedMed);
-                                        await ref
-                                            .read(notificationServiceProvider)
-                                            .scheduleDoseReminder(deletedMed);
-                                      },
-                                    ),
-                                  );
-
-                                  final controller = messenger.showSnackBar(
-                                    snackBar,
-                                  );
-
-                                  // THE OVERRIDE
-                                  Future.delayed(
-                                    const Duration(seconds: 3),
-                                    () {
-                                      try {
-                                        controller.close();
-                                      } catch (_) {}
-                                    },
-                                  );
-                                },
-                              );
-                            }, childCount: completed.length),
-                          ),
-                        ],
-                        const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),
