@@ -4,39 +4,62 @@ import 'package:dose_tracker/core/widgets/custom_text.dart';
 
 class CustomEmptyState extends StatelessWidget {
   final String title;
-  final String description;
+  final String subtitle;
   final IconData icon;
+  final Widget? actionButton;
 
-  const CustomEmptyState({super.key, required this.title, required this.description, required this.icon});
+  const CustomEmptyState({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.actionButton,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 80,
-              color: AppColors.textHint.withValues(alpha: 0.5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 140,
+            height: 140,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: 24),
-            CustomText(
-              title,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+            child: Center(
+              child: Icon(
+                icon,
+                size: 64,
+                color: AppColors.primary,
+              ),
             ),
-            const SizedBox(height: 8),
-            CustomText(
-              description,
+          ),
+          const SizedBox(height: 32),
+          CustomText(
+            title,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: CustomText(
+              subtitle,
               textAlign: TextAlign.center,
               fontSize: 15,
               color: AppColors.textSecondary,
+              height: 1.5,
             ),
+          ),
+          if (actionButton != null) ...[
+            const SizedBox(height: 32),
+            actionButton!,
           ],
-        ),
+        ],
       ),
     );
   }
