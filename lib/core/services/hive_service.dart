@@ -16,6 +16,7 @@ class HiveService {
     Hive.registerAdapter(DoseLogAdapter());
     await Hive.openBox<Medication>(_medicationBox);
     await Hive.openBox<DoseLog>(_doseLogBox);
+    await Hive.openBox('settings');
   }
 
   // ── Medication CRUD ──────────────────────────────────────────────
