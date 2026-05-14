@@ -12,6 +12,7 @@ import 'package:dose_tracker/core/services/supabase_sync_service.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:dose_tracker/features/medication/add_medication_screen.dart' as dose_tracker_add_medication;
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -97,55 +98,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 color: Colors.orange.shade50,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 12,
+                  //vertical: 12,
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      color: Colors.orange.shade800,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            'Medication reminders are paused',
-                            fontSize: 14,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.orange.shade800,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomText(
+                            'DoseTrack needs notifications enabled to remind you of your medication.',
+                            fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.shade800,
                           ),
-                          CustomText(
-                            'Enable notifications in settings so you never miss a dose.',
-                            fontSize: 12,
-                            color: Colors.orange.shade900,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () async {
+                    const SizedBox(height: 6),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize:
+                            Size.zero, // No minimum size for text buttons
+                            padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () async {
                         await openAppSettings();
                       },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 13,
-                          vertical: 11,
-                        ),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.orange.shade100,
-                        ),
-                        child: CustomText(
-                            'Fix',
-                            color: Colors.orange.shade900,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                      child: CustomText(
+                        'Go to settings',
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                    
                   ],
                 ),
               ),
@@ -162,11 +156,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               ],
                             ),
                           )
-                        : const CustomEmptyState(
-                            title: 'No medications yet',
-                            description:
-                                'Tap the + button to add your first medication',
+                        : CustomEmptyState(
+                            title: 'No Medications Yet',
+                            subtitle:
+                                'Add your first medication to start tracking. Never miss a dose!',
                             icon: Icons.medication_outlined,
+                            actionButton: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const dose_tracker_add_medication.AddMedicationScreen(),
+                                  ),
+                                );
+                              },
+                              child: const CustomText('Add Medication', color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
                           ))
                   : Column(
                       children: [

@@ -63,9 +63,9 @@ class HistoryScreen extends ConsumerWidget {
                             ),
                           )
                         : const CustomEmptyState(
-                            title: 'No history yet',
-                            description: 'Your dose logs will appear here',
-                            icon: Icons.history_outlined,
+                            title: 'No History Yet',
+                            subtitle: 'Your medication history will appear here once you log a dose.',
+                            icon: Icons.history_rounded,
                           ))
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
