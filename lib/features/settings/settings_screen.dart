@@ -158,8 +158,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               _SettingsTile(
                 icon: Icons.mail_rounded,
-                iconBgColor: Colors.blue.withValues(alpha: 0.1),
-                iconColor: Colors.blue,
+                iconBgColor: AppColors.primary.withValues(alpha: 0.1),
+                iconColor: AppColors.primary,
                 title: 'Send Feedback',
                 trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () async {
@@ -173,8 +173,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _SettingsTile(
                 icon: Icons.privacy_tip_rounded,
-                iconBgColor: Colors.green.withValues(alpha: 0.1),
-                iconColor: Colors.green,
+                iconBgColor: AppColors.primary.withValues(alpha: 0.1),
+                iconColor: AppColors.primary,
                 title: 'Privacy Policy',
                 trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () {
