@@ -73,6 +73,7 @@ void main() async {
         notificationServiceProvider.overrideWithValue(notificationService),
       ],
       child: MaterialApp(
+        
         title: 'Dose Tracker',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,

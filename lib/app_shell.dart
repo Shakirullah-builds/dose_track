@@ -7,6 +7,7 @@ import 'package:dose_tracker/features/history/history_screen.dart';
 import 'package:dose_tracker/features/medication/add_medication_screen.dart';
 import 'package:dose_tracker/core/services/supabase_sync_service.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
+import 'package:dose_tracker/core/widgets/bounce_tap.dart';
 import 'package:dose_tracker/features/settings/settings_screen.dart';
 
 /// The main app shell — hosts bottom nav, FAB, and screen switching.
@@ -94,7 +95,7 @@ class _AppShellState extends ConsumerState<AppShell> {
 
   Widget _buildNavItem(int currentIndex, int index, IconData icon, IconData activeIcon, String label) {
     final isActive = currentIndex == index;
-    return GestureDetector(
+    return BounceTap(
       onTap: () => ref.read(bottomNavIndexProvider.notifier).state = index,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
