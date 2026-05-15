@@ -78,7 +78,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         centerTitle: true,
         title: const CustomText(
           'Settings',
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),

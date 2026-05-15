@@ -35,20 +35,27 @@ class HistoryScreen extends ConsumerWidget {
     final sortedDates = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
 
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: const CustomText(
+          'History',
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary,
+        ),
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: AppColors.divider),
+        ),
+      ),
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
-              child: CustomText(
-                'History',
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
-              ),
-            ),
             Expanded(
               child: sortedDates.isEmpty
                   ? (isSyncing

@@ -164,7 +164,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
         ),
         title: const CustomText(
           'New Medication',
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),
