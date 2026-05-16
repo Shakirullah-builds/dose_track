@@ -87,7 +87,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     completed.sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
 
     final totalMeds = medications.length;
-    final takenCount = doseLogs.where((l) => l.status == 'taken').length;
+    final now = DateTime.now();
+    final todayLogs = doseLogs.where((l) =>
+        l.date.year == now.year &&
+        l.date.month == now.month &&
+        l.date.day == now.day);
+    final takenCount = todayLogs.where((l) => l.status == 'taken').length.clamp(0, totalMeds);
     final adherence = totalMeds > 0 ? takenCount / totalMeds : 0.0;
 
     return Scaffold(

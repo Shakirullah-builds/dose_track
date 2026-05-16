@@ -15,6 +15,7 @@ class CompletedCard extends StatelessWidget {
   final DoseLog doseLog;
   final VoidCallback onDelete;
   const CompletedCard({
+    super.key,
     required this.medication,
     required this.doseLog,
     required this.onDelete,
@@ -79,11 +80,15 @@ class CompletedCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary.withValues(alpha: 0.7),
                     decoration: isTaken ? TextDecoration.lineThrough : null,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   CustomText(
                     dosageLabel(medication),
                     fontSize: 14,
                     color: AppColors.textSecondary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

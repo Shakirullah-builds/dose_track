@@ -90,12 +90,16 @@ class HistoryTile extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   if (dosageStr.isNotEmpty)
                     CustomText(
                       dosageStr,
                       fontSize: 13,
                       color: AppColors.textSecondary,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                 ],
               ),

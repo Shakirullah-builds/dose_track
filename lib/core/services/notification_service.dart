@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timezone/timezone.dart' as tz;
-
 import 'package:dose_tracker/core/models/medication.dart';
 
 /// Centralized service for scheduling dose reminder notifications.
@@ -123,28 +121,28 @@ class NotificationService {
   /// Computes the next occurrence of [timeStr] (format "HH:mm") as a
   /// TZDateTime. If the time has already passed today, it schedules for
   /// tomorrow — this prevents the "notification fires immediately" bug.
-  tz.TZDateTime _nextInstanceOfTime(String timeStr) {
-    final parts = timeStr.split(':');
-    final hour = int.parse(parts[0]);
-    final minute = int.parse(parts[1]);
+  // tz.TZDateTime _nextInstanceOfTime(String timeStr) {
+  //   final parts = timeStr.split(':');
+  //   final hour = int.parse(parts[0]);
+  //   final minute = int.parse(parts[1]);
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
+  //   final now = tz.TZDateTime.now(tz.local);
+  //   var scheduled = tz.TZDateTime(
+  //     tz.local,
+  //     now.year,
+  //     now.month,
+  //     now.day,
+  //     hour,
+  //     minute,
+  //   );
 
-    // If time already passed today, push to tomorrow
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
+  //   // If time already passed today, push to tomorrow
+  //   if (scheduled.isBefore(now)) {
+  //     scheduled = scheduled.add(const Duration(days: 1));
+  //   }
 
-    return scheduled;
-  }
+  //   return scheduled;
+  // }
 
   /// Generates a stable 32-bit int ID from the UUID string.
   /// Notification IDs must be int, so we use hashCode.

@@ -13,6 +13,7 @@ class DateGroup extends ConsumerWidget {
   final Function(DoseLog) onLogDeleted;
 
   const DateGroup({
+    super.key,
     required this.date,
     required this.logs,
     required this.medMap,

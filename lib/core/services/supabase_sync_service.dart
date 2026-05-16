@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,12 +26,29 @@ class SupabaseSyncService {
     required VoidCallback onComplete,
     required Function(String) onError,
   }) async {
+    // ── Fresh user fast-path ──────────────────────────────────────────
+    // If there's no authenticated user (brand new install or signed out),
+    // skip the sync entirely. Don't even set the syncing flag — this
+    // prevents the "Restoring data..." spinner from flashing for new users.
+    if (_supabase.auth.currentUser == null) {
+      onComplete();
+      return;
+    }
+
+    // ── Fresh anonymous user fast-path ────────────────────────────────
+    // On a fresh install the app auto-signs-in anonymously, so currentUser
+    // is NOT null. But there's nothing in the cloud to restore. We detect
+    // this by checking a local flag + empty Hive. Once a real sync succeeds
+    // we flip the flag so returning users DO get the spinner.
+    final settingsBox = await Hive.openBox('settings');
+    final hasSyncedBefore = settingsBox.get('has_synced_before', defaultValue: false);
+    if (!hasSyncedBefore && HiveService.getAllMedications().isEmpty) {
+      onComplete();
+      return;
+    }
+
     ref.read(isInitialSyncingProvider.notifier).state = true;
     try {
-      if (_supabase.auth.currentUser == null) {
-        onComplete();
-        return;
-      }
 
       // 1. Fetch Medications
       final medsData = await _supabase.from('medications').select();
@@ -69,6 +87,10 @@ class SupabaseSyncService {
       // 3. Save to Hive
       await HiveService.saveAllMedications(medsToSave);
       await HiveService.saveAllDoseLogs(logsToSave);
+
+      // Mark that we've synced at least once so the fresh-install
+      // fast-path doesn't skip future syncs on reinstall/new device.
+      await settingsBox.put('has_synced_before', true);
 
       debugPrint('Sync: Successfully synced down from Supabase on launch.');
 

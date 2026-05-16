@@ -86,7 +86,7 @@ class Header extends StatelessWidget {
                     lineWidth: 8,
                     percent: adherence.clamp(0.0, 1.0),
                     center: CustomText(
-                      '${(adherence * 100).round()}%',
+                      '${(adherence.clamp(0.0, 1.0) * 100).round()}%',
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                       color: AppColors.textPrimary,

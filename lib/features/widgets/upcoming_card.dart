@@ -80,6 +80,8 @@ class UpcomingCard extends ConsumerWidget {
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
                               color: AppColors.textPrimary,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           CustomText(
@@ -94,6 +96,8 @@ class UpcomingCard extends ConsumerWidget {
                         dosageLabel(medication),
                         fontSize: 14,
                         color: AppColors.textSecondary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
