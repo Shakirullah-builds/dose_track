@@ -1,6 +1,6 @@
 import 'package:dose_tracker/core/widgets/custom_empty_state.dart';
 import 'package:dose_tracker/features/widgets/date_group.dart';
-import 'package:dose_tracker/features/widgets/snackbar.dart';
+import 'package:dose_tracker/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_tracker/core/models/medication.dart';
@@ -91,7 +91,7 @@ class HistoryScreen extends ConsumerWidget {
                                 .read(doseLogListProvider.notifier)
                                 .deleteLog(deletedLog.id);
 
-                            AppSnackBar.showWithUndo(
+                            TopToast.showWithUndo(
                               context,
                               message: 'Dose log removed.',
                               onUndo: () {

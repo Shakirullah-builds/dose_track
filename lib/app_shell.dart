@@ -1,5 +1,5 @@
 import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/features/widgets/snackbar.dart';
+import 'package:dose_tracker/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_tracker/core/providers/medication_provider.dart';
@@ -40,7 +40,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         },
         onError: (message) {
           if (mounted) {
-            AppSnackBar.showError(context, message);
+            TopToast.showError(context, message);
           }
         },
       );

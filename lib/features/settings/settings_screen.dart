@@ -1,4 +1,4 @@
-import 'package:dose_tracker/features/widgets/snackbar.dart';
+import 'package:dose_tracker/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -138,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         setState(() {
                           _notificationsEnabled = previousValue;
                         });
-                        AppSnackBar.showError(
+                        TopToast.showError(
                           context,
                           'Failed to sync settings with the cloud.',
                         );
@@ -161,7 +161,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: 'Send Feedback',
                 trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () async {
-                  final uri = Uri.parse('mailto:omotososakiru25@gmail.com?subject=DoseTrack Feedback');
+                  final uri = Uri.parse(
+                    'mailto:omotososakiru25@gmail.com?subject=DoseTrack Feedback',
+                  );
                   try {
                     await launchUrl(uri);
                   } catch (e) {
@@ -289,7 +291,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       } catch (e) {
                         debugPrint('Wipe Error: $e');
                         if (context.mounted) {
-                          AppSnackBar.showError(
+                          TopToast.showError(
                             context,
                             'Failed to wipe data. Please check your connection and try again.',
                           );
@@ -442,7 +444,9 @@ class _SettingsCard extends StatelessWidget {
     for (int i = 0; i < children.length; i++) {
       list.add(children[i]);
       if (i < children.length - 1) {
-        list.add(const Divider(height: 1, color: AppColors.divider, indent: 64));
+        list.add(
+          const Divider(height: 1, color: AppColors.divider, indent: 64),
+        );
       }
     }
 
@@ -462,9 +466,7 @@ class _SettingsCard extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: list,
-        ),
+        child: Column(children: list),
       ),
     );
   }
@@ -536,10 +538,7 @@ class _SettingsTile extends StatelessWidget {
     );
 
     if (onTap != null) {
-      tile = InkWell(
-        onTap: onTap,
-        child: tile,
-      );
+      tile = InkWell(onTap: onTap, child: tile);
     }
 
     return tile;

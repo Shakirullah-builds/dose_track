@@ -11,7 +11,7 @@ import 'package:dose_tracker/core/providers/medication_provider.dart';
 import 'package:dose_tracker/core/services/notification_service.dart';
 import 'package:dose_tracker/core/services/supabase_sync_service.dart';
 import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/features/widgets/snackbar.dart';
+import 'package:dose_tracker/core/widgets/top_toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dose_tracker/features/medication/add_medication_screen.dart' as dose_tracker_add_medication;
@@ -207,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                             .read(notificationServiceProvider)
                                             .cancelReminder(deletedMed.id);
 
-                                        AppSnackBar.showWithUndo(
+                                        TopToast.showWithUndo(
                                           context,
                                           message: 'Medication deleted.',
                                           onUndo: () async {
@@ -256,7 +256,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                             .read(notificationServiceProvider)
                                             .cancelReminder(deletedMed.id);
 
-                                        AppSnackBar.showWithUndo(
+                                        TopToast.showWithUndo(
                                           context,
                                           message: 'Medication deleted.',
                                           onUndo: () async {

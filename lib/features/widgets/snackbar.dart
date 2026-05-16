@@ -22,9 +22,9 @@ class AppSnackBar {
     messenger.showSnackBar(
       SnackBar(
         duration: _defaultDuration,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        //behavior: SnackBarBehavior.floating,
+        //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+       // margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         content: CustomText(message, color: Colors.white),
       ),
     );

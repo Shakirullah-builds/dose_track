@@ -1,6 +1,6 @@
 import 'package:dose_tracker/core/constants/app_colors.dart';
 import 'package:dose_tracker/core/widgets/custom_elevated_button.dart';
-import 'package:dose_tracker/features/widgets/snackbar.dart';
+import 'package:dose_tracker/core/widgets/top_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,7 +99,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
   Future<void> _save() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      AppSnackBar.show(context, 'Please enter a medication name');
+      TopToast.show(context, 'Please enter a medication name');
       return;
     }
 
@@ -107,7 +107,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
     if (_selectedTime.hour < now.hour ||
         (_selectedTime.hour == now.hour &&
             _selectedTime.minute <= now.minute)) {
-      AppSnackBar.showError(
+      TopToast.showError(
         context,
         'Please select a future time so the alarm can trigger properly.',
       );
@@ -137,12 +137,12 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       await ref.read(medicationListProvider.notifier).addMedication(med);
 
       if (mounted) {
-        AppSnackBar.show(context, 'Medication added successfully');
+        TopToast.show(context, 'Medication added successfully');
         Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
-        AppSnackBar.showError(context, 'Error saving: $e');
+        TopToast.showError(context, 'Error saving: $e');
       }
     } finally {
       if (mounted) setState(() => _saving = false);
