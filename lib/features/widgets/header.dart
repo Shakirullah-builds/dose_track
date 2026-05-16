@@ -141,8 +141,9 @@ final BoxDecoration premiumCardDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(24),
   boxShadow: [
     BoxShadow(
-      color: Colors.black.withValues(alpha: 0.04),
-      blurRadius: 10,
+      color: AppColors.primary.withValues(alpha: 0.12),
+      blurRadius: 16,
+      spreadRadius: 2,
       offset: const Offset(0, 4),
     ),
   ],

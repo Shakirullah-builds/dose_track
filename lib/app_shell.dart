@@ -56,15 +56,27 @@ class _AppShellState extends ConsumerState<AppShell> {
         index: currentIndex,
         children: _screens,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const AddMedicationScreen(),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
-          );
-        },
-        child: const Icon(Icons.add, size: 28),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const AddMedicationScreen(),
+              ),
+            );
+          },
+          child: const Icon(Icons.add, size: 28),
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(

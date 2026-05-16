@@ -6,6 +6,7 @@ import 'package:dose_tracker/core/widgets/custom_text.dart';
 import 'package:dose_tracker/features/widgets/action_button.dart';
 import 'package:dose_tracker/features/widgets/header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Premium Bento Box upcoming medication card.
@@ -125,12 +126,15 @@ class UpcomingCard extends ConsumerWidget {
                     child: ActionButton(
                       'Taken',
                       false,
-                      () => ref
-                          .read(doseLogListProvider.notifier)
-                          .logDose(
-                            medicationId: medication.id,
-                            status: 'taken',
-                          ),
+                      () {
+                        HapticFeedback.mediumImpact();
+                        ref
+                            .read(doseLogListProvider.notifier)
+                            .logDose(
+                              medicationId: medication.id,
+                              status: 'taken',
+                            );
+                      },
                     ),
                   ),
                 ],

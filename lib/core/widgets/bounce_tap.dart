@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BounceTap extends ConsumerStatefulWidget {
@@ -22,7 +23,10 @@ class _BounceTapState extends ConsumerState<BounceTap> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => setState(() => _scale = 0.95),
+      onTapDown: (_) {
+        HapticFeedback.lightImpact();
+        setState(() => _scale = 0.95);
+      },
       onTapUp: (_) {
         setState(() => _scale = 1.0);
         widget.onTap();
