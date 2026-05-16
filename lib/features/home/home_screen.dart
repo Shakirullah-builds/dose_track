@@ -177,7 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   ),
                                 );
                               },
-                              child: const CustomText('Add Medication', color: Colors.white, fontWeight: FontWeight.bold),
+                              child: const CustomText('+ Add Medication', color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ))
                   : Column(
