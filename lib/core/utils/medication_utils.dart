@@ -1,4 +1,4 @@
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/models/medication.dart';
 import 'package:intl/intl.dart';
 
 String fmt(String t) {

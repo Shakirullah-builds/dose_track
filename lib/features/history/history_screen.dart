@@ -1,14 +1,14 @@
-import 'package:dose_tracker/core/widgets/custom_empty_state.dart';
-import 'package:dose_tracker/core/services/pdf_export_service.dart';
-import 'package:dose_tracker/features/widgets/date_group.dart';
-import 'package:dose_tracker/core/widgets/top_toast.dart';
+import 'package:dose_vault/core/widgets/custom_empty_state.dart';
+import 'package:dose_vault/core/services/pdf_export_service.dart';
+import 'package:dose_vault/features/widgets/date_group.dart';
+import 'package:dose_vault/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/services/supabase_sync_service.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
 
 /// History screen — shows all dose logs grouped by date.
 class HistoryScreen extends ConsumerWidget {
@@ -57,7 +57,7 @@ class HistoryScreen extends ConsumerWidget {
             ? [
                 IconButton(
                   icon: const Icon(
-                    Icons.share,
+                    Icons.picture_as_pdf,
                     color: AppColors.primary,
                   ),
                   tooltip: 'Export Report',

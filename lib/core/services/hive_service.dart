@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/models/medication.dart';
 import 'package:uuid/uuid.dart';
 
 /// Centralized Hive service — handles init, CRUD for medications and dose logs.

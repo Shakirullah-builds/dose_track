@@ -1,6 +1,6 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/bounce_tap.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/bounce_tap.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 /// Reusable full-width elevated button wrapped in BounceTap.

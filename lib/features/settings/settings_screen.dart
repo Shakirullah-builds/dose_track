@@ -1,14 +1,14 @@
-import 'package:dose_tracker/core/widgets/top_toast.dart';
+import 'package:dose_vault/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/app_shell.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/core/constants/app_colors.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/app_shell.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -162,7 +162,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () async {
                   final uri = Uri.parse(
-                    'mailto:omotososakiru25@gmail.com?subject=DoseTrack Feedback',
+                    'mailto:omotososakiru25@gmail.com?subject=DoseVault Feedback',
                   );
                   try {
                     await launchUrl(uri);
@@ -190,7 +190,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Navigator.of(dialogContext).pop();
                       try {
                         final uri = Uri.parse(
-                          'https://doc-hosting.flycricket.io/dosetrack-privacy-policy/eb3a8936-0772-4934-9e7d-86065794aa7f/privacy',
+                          'https://doc-hosting.flycricket.io/dosevault-privacy-policy/c8c8b110-b272-45fa-b7a0-46878c10ed1b/privacy',
                         );
                         await launchUrl(uri);
                       } catch (e) {

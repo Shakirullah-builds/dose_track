@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/core/services/supabase_sync_service.dart';
 
 /// Holds the full medication list. Rebuild when meds are added/removed.
 class MedicationListNotifier extends Notifier<List<Medication>> {

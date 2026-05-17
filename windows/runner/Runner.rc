@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "dose_tracker" "\0"
+            VALUE "CompanyName", "com.shakirullah" "\0"
+            VALUE "FileDescription", "dose_vault" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "dose_tracker" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "dose_tracker.exe" "\0"
-            VALUE "ProductName", "dose_tracker" "\0"
+            VALUE "InternalName", "dose_vault" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.shakirullah. All rights reserved." "\0"
+            VALUE "OriginalFilename", "dose_vault.exe" "\0"
+            VALUE "ProductName", "dose_vault" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

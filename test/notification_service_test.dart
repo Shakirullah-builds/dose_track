@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:dose_tracker/core/services/notification_service.dart';
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
+import 'package:dose_vault/core/models/medication.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 

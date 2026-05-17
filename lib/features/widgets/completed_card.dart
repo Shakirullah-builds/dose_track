@@ -1,8 +1,8 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/utils/medication_utils.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/features/widgets/header.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/utils/medication_utils.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/features/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

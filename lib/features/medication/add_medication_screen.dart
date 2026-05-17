@@ -1,14 +1,14 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/custom_elevated_button.dart';
-import 'package:dose_tracker/core/widgets/top_toast.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
+import 'package:dose_vault/core/widgets/top_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/core/widgets/custom_text_field.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/widgets/custom_text_field.dart';
 
 class AddMedicationScreen extends ConsumerStatefulWidget {
   const AddMedicationScreen({super.key});

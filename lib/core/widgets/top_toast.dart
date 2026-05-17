@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 /// Premium top toast notification using Flutter's native Overlay API.

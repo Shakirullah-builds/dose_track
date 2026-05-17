@@ -1,14 +1,14 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:dose_tracker/core/models/onboarding_model.dart';
-import 'package:dose_tracker/core/widgets/custom_elevated_button.dart';
+import 'package:dose_vault/core/models/onboarding_model.dart';
+import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/app_shell.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/app_shell.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});

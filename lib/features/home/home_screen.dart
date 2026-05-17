@@ -1,20 +1,20 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/custom_elevated_button.dart';
-import 'package:dose_tracker/core/widgets/custom_empty_state.dart';
-import 'package:dose_tracker/features/widgets/completed_card.dart';
-import 'package:dose_tracker/features/widgets/header.dart';
-import 'package:dose_tracker/features/widgets/upcoming_card.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
+import 'package:dose_vault/core/widgets/custom_empty_state.dart';
+import 'package:dose_vault/features/widgets/completed_card.dart';
+import 'package:dose_vault/features/widgets/header.dart';
+import 'package:dose_vault/features/widgets/upcoming_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/services/notification_service.dart';
-import 'package:dose_tracker/core/services/supabase_sync_service.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/core/widgets/top_toast.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
+import 'package:dose_vault/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/widgets/top_toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:dose_tracker/features/medication/add_medication_screen.dart' as dose_tracker_add_medication;
+import 'package:dose_vault/features/medication/add_medication_screen.dart' as dose_vault_add_medication;
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -121,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         const SizedBox(width: 12),
                         Expanded(
                           child: CustomText(
-                            'DoseTrack needs notifications enabled to remind you of your medication.',
+                            'DoseVault needs notifications enabled to remind you of your medication.',
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.shade800,
@@ -176,7 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 onPressed: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (_) => const dose_tracker_add_medication.AddMedicationScreen(),
+                                      builder: (_) => const dose_vault_add_medication.AddMedicationScreen(),
                                     ),
                                   );
                                 },

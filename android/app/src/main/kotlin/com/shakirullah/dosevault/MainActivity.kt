@@ -1,4 +1,4 @@
-package com.example.dose_tracker
+package com.shakirullah.dosevault
 
 import io.flutter.embedding.android.FlutterActivity
 

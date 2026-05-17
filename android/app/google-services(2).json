@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:751274060697:android:3614ee0346824b773f8108",
+        "mobilesdk_app_id": "1:751274060697:android:b985628261db93fc3f8108",
         "android_client_info": {
-          "package_name": "com.example.dose_tracker"
+          "package_name": "com.shakirullah.dose_vault"
         }
       },
       "oauth_client": [],

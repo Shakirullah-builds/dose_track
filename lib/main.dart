@@ -1,7 +1,7 @@
-import 'package:dose_tracker/app_shell.dart';
-import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/core/services/notification_service.dart';
-import 'package:dose_tracker/core/theme/app_theme.dart';
+import 'package:dose_vault/app_shell.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
+import 'package:dose_vault/core/theme/app_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +10,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:dose_tracker/firebase_options.dart';
-import 'package:dose_tracker/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/firebase_options.dart';
+import 'package:dose_vault/core/services/supabase_sync_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dose_tracker/features/onboarding/onboarding_screen.dart';
+import 'package:dose_vault/features/onboarding/onboarding_screen.dart';
 
 void main() async {
   // Ensure the native bridge is locked in before we run async code

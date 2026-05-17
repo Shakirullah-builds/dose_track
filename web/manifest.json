@@ -1,6 +1,6 @@
 {
-    "name": "dose_tracker",
-    "short_name": "dose_tracker",
+    "name": "dose_vault",
+    "short_name": "dose_vault",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

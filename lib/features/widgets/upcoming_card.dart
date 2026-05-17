@@ -1,10 +1,10 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/models/medication.dart';
-import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/core/utils/medication_utils.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/features/widgets/action_button.dart';
-import 'package:dose_tracker/features/widgets/header.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/core/utils/medication_utils.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/features/widgets/action_button.dart';
+import 'package:dose_vault/features/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

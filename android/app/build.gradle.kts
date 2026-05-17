@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dose_tracker"
+    namespace = "com.shakirullah.dosevault"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.dose_tracker"
+        applicationId = "com.shakirullah.dosevault"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

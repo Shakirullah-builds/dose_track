@@ -1,4 +1,4 @@
-name: dose_tracker
+name: dose_vault
 description: "A medication dose tracking app."
 publish_to: 'none'
 
@@ -54,6 +54,7 @@ dev_dependencies:
   mocktail: ^1.0.5
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
+  change_app_package_name: ^1.5.0
 
 flutter:
   uses-material-design: true

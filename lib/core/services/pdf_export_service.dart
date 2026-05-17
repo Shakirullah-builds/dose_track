@@ -3,7 +3,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/models/medication.dart';
 
 /// Generates a professional PDF adherence report and opens the native share sheet.
 ///
@@ -34,8 +34,8 @@ class PdfExportService {
     required int totalSkipped,
   }) async {
     final pdf = pw.Document(
-      title: 'DoseTrack Patient Adherence Report',
-      author: 'DoseTrack App',
+      title: 'DoseVault Patient Adherence Report',
+      author: 'DoseVault App',
     );
 
     // Sort logs newest-first for the table
@@ -58,7 +58,7 @@ class PdfExportService {
 
     await Printing.sharePdf(
       bytes: await pdf.save(),
-      filename: 'DoseTrack_Report.pdf',
+      filename: 'DoseVault_Report.pdf',
     );
   }
 
@@ -72,7 +72,7 @@ class PdfExportService {
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
             pw.Text(
-              'DoseTrack',
+              'DoseVault',
               style: pw.TextStyle(
                 fontSize: 24,
                 fontWeight: pw.FontWeight.bold,
@@ -221,7 +221,7 @@ class PdfExportService {
         pw.SizedBox(height: 8),
         pw.Center(
           child: pw.Text(
-            'Generated securely via DoseTrack.',
+            'Generated securely via DoseVault.',
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
           ),
         ),

@@ -3,8 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:dose_tracker/core/services/hive_service.dart';
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/core/models/medication.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 final isInitialSyncingProvider = StateProvider<bool>((ref) => false);

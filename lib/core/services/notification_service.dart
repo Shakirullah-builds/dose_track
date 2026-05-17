@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/models/medication.dart';
+import 'package:dose_vault/core/models/medication.dart';
 
 /// Centralized service for scheduling dose reminder notifications.
 ///

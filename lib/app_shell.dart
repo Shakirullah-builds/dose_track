@@ -1,15 +1,15 @@
-import 'package:dose_tracker/core/constants/app_colors.dart';
-import 'package:dose_tracker/core/widgets/top_toast.dart';
+import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dose_tracker/core/providers/medication_provider.dart';
-import 'package:dose_tracker/features/home/home_screen.dart';
-import 'package:dose_tracker/features/history/history_screen.dart';
-import 'package:dose_tracker/features/medication/add_medication_screen.dart';
-import 'package:dose_tracker/core/services/supabase_sync_service.dart';
-import 'package:dose_tracker/core/widgets/custom_text.dart';
-import 'package:dose_tracker/core/widgets/bounce_tap.dart';
-import 'package:dose_tracker/features/settings/settings_screen.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/features/home/home_screen.dart';
+import 'package:dose_vault/features/history/history_screen.dart';
+import 'package:dose_vault/features/medication/add_medication_screen.dart';
+import 'package:dose_vault/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/widgets/bounce_tap.dart';
+import 'package:dose_vault/features/settings/settings_screen.dart';
 
 /// The main app shell — hosts bottom nav, FAB, and screen switching.
 class AppShell extends ConsumerStatefulWidget {
