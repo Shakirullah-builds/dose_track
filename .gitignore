@@ -68,3 +68,7 @@ app.*.map.json
 
 # Firebase Options
 lib/firebase_options.dart
+
+# Android Keystore and Properties
+android/key.properties
+android/app/upload-keystore.jks
