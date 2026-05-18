@@ -26,9 +26,10 @@ serve(async (req) => {
     const currentTimeString = `${currentHour}:${currentMinute}`; 
 
     // 2. Find ONLY the medications scheduled for this exact minute
+    // FIX: Added 'id' and 'instructions' to the select query!
     const { data: dueMedications, error: medError } = await supabase
       .from('medications')
-      .select('user_id, name, dosage, unit')
+      .select('id, user_id, name, dosage, unit, instructions') 
       .ilike('scheduled_time', `%${currentTimeString}%`);
 
     if (medError) throw medError;
@@ -44,35 +45,57 @@ serve(async (req) => {
     // 4. Fetch the specific FCM tokens for users WHO HAVE NOTIFICATIONS ENABLED
     const { data: tokens, error: tokenError } = await supabase
       .from('user_tokens')
-      .select('fcm_token')
+      .select('user_id, fcm_token') 
       .in('user_id', userIds)
-      .eq('notifications_enabled', true); // <-- THE MAGIC LOCK
+      .eq('notifications_enabled', true);
 
     if (tokenError) throw tokenError;
     
-    // If users need pills, but they ALL turned off notifications, exit quietly!
     if (!tokens || tokens.length === 0) {
         return new Response("Tokens found, but all users have paused notifications.", { status: 200 });
     }
 
-    const fcmTokens = tokens.map(t => t.fcm_token);
+    // 5. Build personalized messages for EVERY single medication
+    const messages: any[] = [];
 
-    // 5. Fire the sniper shot!
-    const payload = {
-      notification: {
-        title: "💊 Dose Reminder!",
-        body: `It is time to take your medication. Open the app to log your dose.`,
-      },
-      tokens: fcmTokens,
-    };
+    for (const med of dueMedications) {
+      // Find the specific tokens for the user who owns THIS medication
+      const userTokens = tokens.filter(t => t.user_id === med.user_id);
+      
+      if (userTokens.length > 0) {
+        // Construct the personalized text!
+        const title = `💊 Time for ${med.name} (${med.dosage}${med.unit})`;
+        const body = med.instructions && med.instructions.trim() !== '' 
+            ? `Note: ${med.instructions}` 
+            : `Open DoseVault to log your dose.`;
 
-    const response = await admin.messaging().sendEachForMulticast(payload);
+        // Create a push notification for each of the user's devices
+        for (const target of userTokens) {
+          messages.push({
+            token: target.fcm_token,
+            notification: {
+              title: title,
+              body: body,
+            },
+            data: {
+              // We pass the ID silently in the background. We need this for the Action Buttons!
+              medicationId: med.id, 
+              action: 'dose_reminder'
+            }
+          });
+        }
+      }
+    }
+
+    // 6. Fire the sniper shots! 
+    const response = await admin.messaging().sendEach(messages);
 
     return new Response(
-      JSON.stringify({ success: true, targetedUsers: fcmTokens.length, details: response }),
+      JSON.stringify({ success: true, messagesSent: messages.length, details: response }),
       { headers: { "Content-Type": "application/json" } }
     );
 
+  // FIX: Added the missing catch block to close the function properly!
   } catch (err: any) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }

@@ -68,14 +68,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+
     final medications = ref.watch(medicationListProvider);
     final doseLogs = ref.watch(doseLogListProvider);
     final isSyncing = ref.watch(isInitialSyncingProvider);
+    
+    final now = DateTime.now();
+
+    // ── THE LOGICAL DAY FIX (3:00 AM Rollover) ──
+    final isLateNight = now.hour < 3;
+    final logicalDate = isLateNight ? now.subtract(const Duration(days: 1)) : now;
+    
+    // Define the exact 24-hour window: 3:00 AM to 3:00 AM next day
+    final logicalStart = DateTime(logicalDate.year, logicalDate.month, logicalDate.day, 3, 0);
+    final logicalEnd = logicalStart.add(const Duration(hours: 24));
+
+    // ONLY grab logs that happened during this logical 24-hour shift
+    final currentLogs = doseLogs.where((l) => 
+        l.date.isAfter(logicalStart.subtract(const Duration(seconds: 1))) && 
+        l.date.isBefore(logicalEnd)
+    ).toList();
+
     final upcoming = <Medication>[];
     final completed = <Medication>[];
 
     for (final med in medications) {
-      final hasLog = doseLogs.any((l) => l.medicationId == med.id);
+      // FIX: Check currentLogs, not the entire doseLogs history!
+      final hasLog = currentLogs.any((l) => l.medicationId == med.id);
       if (hasLog) {
         completed.add(med);
       } else {
@@ -87,13 +106,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     completed.sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
 
     final totalMeds = medications.length;
-    final now = DateTime.now();
-    final todayLogs = doseLogs.where((l) =>
-        l.date.year == now.year &&
-        l.date.month == now.month &&
-        l.date.day == now.day);
-    final takenCount = todayLogs.where((l) => l.status == 'taken').length.clamp(0, totalMeds);
+    final takenCount = currentLogs.where((l) => l.status == 'taken').length.clamp(0, totalMeds);
     final adherence = totalMeds > 0 ? takenCount / totalMeds : 0.0;
+    // final medications = ref.watch(medicationListProvider);
+    // final doseLogs = ref.watch(doseLogListProvider);
+    // final isSyncing = ref.watch(isInitialSyncingProvider);
+    // final upcoming = <Medication>[];
+    // final completed = <Medication>[];
+
+    // for (final med in medications) {
+    //   final hasLog = doseLogs.any((l) => l.medicationId == med.id);
+    //   if (hasLog) {
+    //     completed.add(med);
+    //   } else {
+    //     upcoming.add(med);
+    //   }
+    // }
+
+    // upcoming.sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
+    // completed.sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
+
+    // final totalMeds = medications.length;
+    // final now = DateTime.now();
+    // final todayLogs = doseLogs.where((l) =>
+    //     l.date.year == now.year &&
+    //     l.date.month == now.month &&
+    //     l.date.day == now.day);
+    // final takenCount = todayLogs.where((l) => l.status == 'taken').length.clamp(0, totalMeds);
+    // final adherence = totalMeds > 0 ? takenCount / totalMeds : 0.0;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -189,6 +229,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           adherence: adherence,
                           takenCount: takenCount,
                           totalCount: totalMeds,
+                          logicalDate: logicalDate,
                         ),
                         Expanded(
                           child: CustomScrollView(

@@ -16,16 +16,18 @@ class Header extends StatelessWidget {
   final double adherence;
   final int takenCount;
   final int totalCount;
+  final DateTime logicalDate;
   const Header({
     required this.adherence,
     required this.takenCount,
     required this.totalCount,
+    required this.logicalDate,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
+    //final now = DateTime.now();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -47,7 +49,7 @@ class Header extends StatelessWidget {
                     color: AppColors.textPrimary,
                   ),
                   CustomText(
-                    DateFormat('EEEE, MMM d').format(now),
+                    DateFormat('EEEE, MMM d').format(logicalDate),
                     //fontWeight: FontWeight.normal,
                     fontSize: 14,
                     color: AppColors.textSecondary,

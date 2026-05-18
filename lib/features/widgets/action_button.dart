@@ -17,25 +17,25 @@ class ActionButton extends StatelessWidget {
     return Material(
       color: isSkip
           ? AppColors.skipped
-          : AppColors.taken.withValues(alpha: 0.12),
+          : AppColors.primary.withValues(alpha: 0.12),
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!isSkip) ...[
-                const Icon(Icons.check, size: 18, color: AppColors.taken),
+                const Icon(Icons.check, size: 18, color: AppColors.primaryDark),
                 const SizedBox(width: 6),
               ],
               CustomText(
                 label,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isSkip ? AppColors.skippedText : AppColors.taken,
+                color: isSkip ? AppColors.skippedText : AppColors.primaryDark,
               ),
             ],
           ),

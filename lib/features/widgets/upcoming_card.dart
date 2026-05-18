@@ -24,11 +24,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UpcomingCard extends ConsumerWidget {
   final Medication medication;
   final VoidCallback onDelete;
-  const UpcomingCard({required this.medication, required this.onDelete, super.key});
+  const UpcomingCard({
+    required this.medication,
+    required this.onDelete,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOverdue = medication.scheduledDateTime.isBefore(DateTime.now());
+    final now = DateTime.now();
+    DateTime scheduledTime = medication.scheduledDateTime;
+
+    // ── 1. THE CINDERELLA FIX (Logical Day) ──
+    // Pull late-night PM pills back to "Yesterday"
+    if (now.hour < 3 && scheduledTime.hour > 12) {
+      scheduledTime = scheduledTime.subtract(const Duration(days: 1));
+    }
+
+    // ── 2. THE TIME TRAVEL FIX (Creation Boundary) ──
+    // If the calculated time happened BEFORE the user even created this medication profile,
+    // they cannot be overdue for it. We must push it forward to its first real occurrence.
+    if (scheduledTime.isBefore(medication.createdAt)) {
+      scheduledTime = scheduledTime.add(const Duration(days: 1));
+    }
+
+    // STATE 1: Pending (Time hasn't arrived yet)
+    final isPending = scheduledTime.isAfter(now);
+
+    // STATE 3: Overdue (15 minutes late)
+    final isOverdue = scheduledTime.isBefore(
+      now.subtract(const Duration(minutes: 15)),
+    );
 
     return Dismissible(
       key: ValueKey('upcoming_${medication.id}'),
@@ -92,12 +118,41 @@ class UpcomingCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      CustomText(
-                        dosageLabel(medication),
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: CustomText(
+                              dosageLabel(medication),
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (isPending) ...[
+                            const SizedBox(width: 8),
+                            _StatusChip(
+                              status: 'Pending',
+                              icon: Icons.hourglass_empty,
+                              cardColor: AppColors.primary.withValues(
+                                alpha: 0.1,
+                              ),
+                              statusColor: AppColors.primary,
+                              iconColor: AppColors.primary,
+                            ),
+                          ],
+                          if (!isPending && isOverdue) ...[
+                            const SizedBox(width: 8),
+                            const _StatusChip(
+                              status: 'Overdue',
+                              icon: Icons.access_time_rounded,
+                              cardColor: Color(0xFFFFF3E0),
+                              statusColor: Color(0xFFE65100),
+                              iconColor: Color(0xFFE65100),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),
@@ -105,12 +160,12 @@ class UpcomingCard extends ConsumerWidget {
               ],
             ),
 
-            const SizedBox(height: 14),
+            // ── BOTTOM SECTION: The 4-State Machine ──
 
-            // ── Bottom row: action buttons OR overdue chip ──
-            if (isOverdue)
-              _OverdueChip()
-            else
+            // If it's NOT pending, the time has arrived. Show the action buttons!
+            if (!isPending) ...[
+              const SizedBox(height: 14),
+              // The buttons ALWAYS appear as long as it's not Pending
               Row(
                 children: [
                   Expanded(
@@ -127,22 +182,19 @@ class UpcomingCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ActionButton(
-                      'Taken',
-                      false,
-                      () {
-                        HapticFeedback.mediumImpact();
-                        ref
-                            .read(doseLogListProvider.notifier)
-                            .logDose(
-                              medicationId: medication.id,
-                              status: 'taken',
-                            );
-                      },
-                    ),
+                    child: ActionButton('Taken', false, () {
+                      HapticFeedback.mediumImpact();
+                      ref
+                          .read(doseLogListProvider.notifier)
+                          .logDose(
+                            medicationId: medication.id,
+                            status: 'taken',
+                          );
+                    }),
                   ),
                 ],
               ),
+            ],
           ],
         ),
       ),
@@ -150,31 +202,65 @@ class UpcomingCard extends ConsumerWidget {
   }
 }
 
-/// Small overdue status chip — replaces action buttons when the dose time passed.
-class _OverdueChip extends StatelessWidget {
+// /// Small pending status chip.
+// class _PendingChip extends StatelessWidget {
+//   const _PendingChip();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+//       decoration: BoxDecoration(
+//         color: const Color(0xFFFFF3E0), // soft orange
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//       child: CustomText(
+//         'Pending',
+//         fontSize: 12,
+//         fontWeight: FontWeight.w600,
+//         color: AppColors.textSecondary,
+//       ),
+//     );
+//   }
+// }
+
+/// Small overdue status chip.
+class _StatusChip extends StatelessWidget {
+  final String status;
+  final IconData icon;
+  final Color cardColor;
+  final Color statusColor;
+  final Color iconColor;
+  const _StatusChip({
+    required this.status,
+    required this.icon,
+    required this.cardColor,
+    required this.statusColor,
+    required this.iconColor,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF3E0), // soft orange
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.access_time_rounded, size: 16, color: Color(0xFFE65100)),
-            SizedBox(width: 6),
-            CustomText(
-              'Overdue',
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFE65100),
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: cardColor,
+        //  color: const Color(0xFFFFF3E0), // soft orange
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Icons.access_time_rounded  color: Color(0xFFE65100) Color(0xFFE65100),
+          Icon(icon, size: 14, color: iconColor),
+          SizedBox(width: 4),
+          CustomText(
+            status,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: statusColor,
+          ),
+        ],
       ),
     );
   }

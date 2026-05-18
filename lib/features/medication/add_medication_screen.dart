@@ -103,16 +103,16 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       return;
     }
 
-    final now = TimeOfDay.now();
-    if (_selectedTime.hour < now.hour ||
-        (_selectedTime.hour == now.hour &&
-            _selectedTime.minute <= now.minute)) {
-      TopToast.showError(
-        context,
-        'Please select a future time so the alarm can trigger properly.',
-      );
-      return;
-    }
+    // final now = TimeOfDay.now();
+    // if (_selectedTime.hour < now.hour ||
+    //     (_selectedTime.hour == now.hour &&
+    //         _selectedTime.minute <= now.minute)) {
+    //   TopToast.showError(
+    //     context,
+    //     'Please select a future time so the alarm can trigger properly.',
+    //   );
+    //   return;
+    // }
 
     final dosage = double.tryParse(_dosageController.text.trim()) ?? 0;
 
@@ -154,7 +154,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
     final timeStr = _selectedTime.format(context);
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),  
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -192,9 +192,9 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                       textCapitalization: TextCapitalization.words,
                       hintText: 'e.g., Amoxicillin',
                     ),
-      
+
                     const SizedBox(height: 24),
-      
+
                     // ── Dosage ──
                     _label('DOSAGE'),
                     const SizedBox(height: 8),
@@ -223,9 +223,9 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                         ),
                       ],
                     ),
-      
+
                     const SizedBox(height: 24),
-      
+
                     // ── Scheduled Time ──
                     _label('SCHEDULED TIME'),
                     const SizedBox(height: 8),
@@ -257,9 +257,9 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                         ),
                       ),
                     ),
-      
+
                     const SizedBox(height: 24),
-      
+
                     // ── Instructions ──
                     _label('INSTRUCTIONS (OPTIONAL)'),
                     const SizedBox(height: 8),
@@ -272,7 +272,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                 ),
               ),
             ),
-      
+
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               child: CustomElevatedButton(
