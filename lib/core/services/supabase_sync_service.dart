@@ -41,7 +41,10 @@ class SupabaseSyncService {
     // this by checking a local flag + empty Hive. Once a real sync succeeds
     // we flip the flag so returning users DO get the spinner.
     final settingsBox = await Hive.openBox('settings');
-    final hasSyncedBefore = settingsBox.get('has_synced_before', defaultValue: false);
+    final hasSyncedBefore = settingsBox.get(
+      'has_synced_before',
+      defaultValue: false,
+    );
     if (!hasSyncedBefore && HiveService.getAllMedications().isEmpty) {
       onComplete();
       return;
@@ -49,7 +52,6 @@ class SupabaseSyncService {
 
     ref.read(isInitialSyncingProvider.notifier).state = true;
     try {
-
       // 1. Fetch Medications
       final medsData = await _supabase.from('medications').select();
       final List<Medication> medsToSave = [];
@@ -111,8 +113,22 @@ class SupabaseSyncService {
     }
   }
 
+  /// Quick reachability check — try resolving the Supabase host.
+  /// Returns false if offline, so we can skip sync silently.
+  Future<bool> _isOnline() async {
+    try {
+      final result = await InternetAddress.lookup(
+        'lyljfonpenizxkkueayw.supabase.co',
+      ).timeout(const Duration(seconds: 3));
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Reads all medications from Hive and performs an upsert to the 'medications' table.
   Future<void> syncMedicationsUp() async {
+    if (!await _isOnline()) return;
     try {
       final meds = HiveService.getAllMedications();
       if (meds.isEmpty) return;
@@ -144,6 +160,7 @@ class SupabaseSyncService {
 
   /// Reads all dose logs from Hive and performs an upsert to the 'dose_logs' table.
   Future<void> syncLogsUp() async {
+    if (!await _isOnline()) return;
     try {
       final logs = HiveService.getAllDoseLogs();
       if (logs.isEmpty) return;
@@ -171,6 +188,7 @@ class SupabaseSyncService {
 
   /// Captures the device FCM token and syncs it to Supabase
   Future<void> syncDeviceToken() async {
+    if (!await _isOnline()) return;
     try {
       if (_supabase.auth.currentUser == null) return;
 

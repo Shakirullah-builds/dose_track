@@ -1,6 +1,7 @@
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
 import 'package:dose_vault/core/widgets/custom_empty_state.dart';
+import 'package:dose_vault/core/widgets/pill_chip.dart';
 import 'package:dose_vault/features/widgets/completed_card.dart';
 import 'package:dose_vault/features/widgets/header.dart';
 import 'package:dose_vault/features/widgets/upcoming_card.dart';
@@ -290,7 +291,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     // Only show "View All" button if there are more than 3 completed medications
                                     onViewAll: completed.length > 3
                                         ? () {
-                                            // TODO: Navigate to History Screen
+                                            ref
+                                                    .read(
+                                                      bottomNavIndexProvider
+                                                          .notifier,
+                                                    )
+                                                    .state =
+                                                1;
                                           }
                                         : null,
                                   ),
@@ -369,35 +376,13 @@ Widget _sectionHeader(String title, {VoidCallback? onViewAll}) {
           color: AppColors.textPrimary,
         ),
         onViewAll != null
-            ? InkWell(
-                borderRadius: BorderRadius.circular(20),
+            ? PillChip(
+                label: "View All",
+                trailingIcon: Icons.arrow_forward_ios,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                textColor: AppColors.primary,
+                iconColor: AppColors.primary,
                 onTap: onViewAll,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      const CustomText(
-                        'View All',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        color: AppColors.primary,
-                        size: 12,
-                      ),
-                    ],
-                  ),
-                ),
               )
             : const SizedBox(),
       ],

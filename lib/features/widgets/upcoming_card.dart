@@ -3,6 +3,7 @@ import 'package:dose_vault/core/models/medication.dart';
 import 'package:dose_vault/core/providers/medication_provider.dart';
 import 'package:dose_vault/core/utils/medication_utils.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:dose_vault/core/widgets/pill_chip.dart';
 import 'package:dose_vault/features/widgets/action_button.dart';
 import 'package:dose_vault/features/widgets/header.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Premium Bento Box upcoming medication card.
 ///
-/// Layout:
-/// ┌─────────────────────────────────────────┐
-/// │  [icon]  MedName              3:00 PM   │
-/// │          250mg • Tablet                 │
-/// │                                         │
-/// │  [ Skipped ]         [ ✓ Taken ]        │
-/// └─────────────────────────────────────────┘
-///
 /// If the scheduled time has passed, the action buttons are replaced
-/// with an "Overdue" status chip so the user sees it at a glance.
+/// with an "Overdue" pill chip so the user sees it at a glance.
 class UpcomingCard extends ConsumerWidget {
   final Medication medication;
   final VoidCallback onDelete;
@@ -110,12 +103,6 @@ class UpcomingCard extends ConsumerWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          CustomText(
-                            fmt(medication.scheduledTime),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary.withValues(alpha: 0.8),
-                          ),
                         ],
                       ),
                       Row(
@@ -130,26 +117,43 @@ class UpcomingCard extends ConsumerWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          PillChip(
+                            label: fmt(medication.scheduledTime),
+                            leadingIcon: Icons.access_time,
+                            fontSize: 12,
+                            textColor: AppColors.textPrimary.withValues(
+                              alpha: 0.8,
+                            ),
+                          ),
                           if (isPending) ...[
                             const SizedBox(width: 8),
-                            _StatusChip(
-                              status: 'Pending',
-                              icon: Icons.hourglass_empty,
-                              cardColor: AppColors.primary.withValues(
+                            PillChip(
+                              label: 'Pending',
+                              leadingIcon: Icons.hourglass_empty,
+                              backgroundColor: AppColors.primary.withValues(
                                 alpha: 0.1,
                               ),
-                              statusColor: AppColors.primary,
-                              iconColor: AppColors.primary,
+                              // statusColor: AppColors.primary,
+                              // iconColor: AppColors.primary,
                             ),
                           ],
                           if (!isPending && isOverdue) ...[
                             const SizedBox(width: 8),
-                            const _StatusChip(
-                              status: 'Overdue',
-                              icon: Icons.access_time_rounded,
-                              cardColor: Color(0xFFFFF3E0),
-                              statusColor: AppColors.warning,
+                            const PillChip(
+                              label: 'Overdue',
+                              leadingIcon: Icons.access_time_rounded,
+                              backgroundColor: Color(0xFFFFF3E0),
+                              textColor: AppColors.warning,
                               iconColor: AppColors.warning,
+                              // statusColor: AppColors.warning,
+                              // iconColor: AppColors.warning,
                             ),
                           ],
                         ],
@@ -197,70 +201,6 @@ class UpcomingCard extends ConsumerWidget {
             ],
           ],
         ),
-      ),
-    );
-  }
-}
-
-// /// Small pending status chip.
-// class _PendingChip extends StatelessWidget {
-//   const _PendingChip();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-//       decoration: BoxDecoration(
-//         color: const Color(0xFFFFF3E0), // soft orange
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: CustomText(
-//         'Pending',
-//         fontSize: 12,
-//         fontWeight: FontWeight.w600,
-//         color: AppColors.textSecondary,
-//       ),
-//     );
-//   }
-// }
-
-/// Small overdue status chip.
-class _StatusChip extends StatelessWidget {
-  final String status;
-  final IconData icon;
-  final Color cardColor;
-  final Color statusColor;
-  final Color iconColor;
-  const _StatusChip({
-    required this.status,
-    required this.icon,
-    required this.cardColor,
-    required this.statusColor,
-    required this.iconColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: cardColor,
-        //  color: const Color(0xFFFFF3E0), // soft orange
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Icons.access_time_rounded  color: Color(0xFFE65100) Color(0xFFE65100),
-          Icon(icon, size: 14, color: iconColor),
-          SizedBox(width: 4),
-          CustomText(
-            status,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: statusColor,
-          ),
-        ],
       ),
     );
   }

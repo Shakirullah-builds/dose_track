@@ -108,7 +108,7 @@ class PdfExportService {
         _statBlock(
           label: 'Total Doses Taken',
           value: taken.toString(),
-          color: PdfColor.fromHex('#02563EB'),
+          color: PdfColor.fromHex('#2563EB'),
         ),
         pw.SizedBox(width: 24),
         _statBlock(
