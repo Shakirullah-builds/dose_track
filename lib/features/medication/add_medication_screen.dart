@@ -149,8 +149,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.white,
+          elevation: 0,
           leading: IconButton(
             icon: const Icon(
+              size: 20,
               Icons.arrow_back_ios_new_rounded,
               color: AppColors.textPrimary,
             ),
@@ -162,7 +164,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),
-          elevation: 0,
+         
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(1),
             child: Container(height: 1, color: AppColors.divider),

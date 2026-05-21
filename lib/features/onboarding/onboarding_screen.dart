@@ -186,7 +186,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                             'Skip',
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary,
+                            color: AppColors.primary,
                           ),
                         ),
                 ),

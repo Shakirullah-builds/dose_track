@@ -17,6 +17,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dose_vault/features/medication/add_medication_screen.dart'
     as dose_vault_add_medication;
+import 'package:dose_vault/features/medication/upcoming_medications_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -239,7 +240,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     // Only show "View All" button if there are more than 3 upcoming medications
                                     onViewAll: upcoming.length > 3
                                         ? () {
-                                            // TODO: Navigate to Full Upcoming Screen`
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const UpcomingMedicationsScreen(),
+                                              ),
+                                            );
                                           }
                                         : null,
                                   ),
