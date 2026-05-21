@@ -7,9 +7,10 @@ class AppColors {
   AppColors._();
 
   // Primary
-  static const Color primary = Color(0xFF4FC3F7); // Calm sky blue
-  static const Color primaryDark = Color(0xFF0396D8);
+  static const Color primary = Color(0xFF3B82F6); // Calm sky blue
+  static const Color primaryDark = Color(0xFF2563EB);
   static const Color accent = Color(0xFF26C6A0); // Teal green for "Taken"
+  static const Color accentLight = Color(0xFFDDFBF4);
 
   // Backgrounds
   static const Color scaffoldBg = Color(0xFFF5F7FA);
@@ -26,6 +27,7 @@ class AppColors {
   static const Color skipped = Color(0xFFE0E5EC);
   static const Color skippedText = Color(0xFF6B7B8D);
   static const Color missed = Color(0xFFFF6B6B);
+  static const Color warning = Color(0xFFE65100);
 
   // Misc
   static const Color divider = Color(0xFFEDF0F5);

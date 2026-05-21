@@ -44,7 +44,7 @@ class Header extends StatelessWidget {
                 children: [
                   const CustomText(
                     'Today',
-                    fontSize: 28,
+                    fontSize: 27,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -76,7 +76,9 @@ class Header extends StatelessWidget {
           // ── Hero Progress Card ────────────────────────────────────
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: premiumCardDecoration,
+            decoration: premiumCardDecoration.copyWith(
+              color: AppColors.primary,
+            ),
             child: Row(
               children: [
                 // Left — Circular ring
@@ -84,6 +86,7 @@ class Header extends StatelessWidget {
                   width: 80,
                   height: 80,
                   child: CircularPercentIndicator(
+                    rotateLinearGradient: true,
                     radius: 40,
                     lineWidth: 8,
                     percent: adherence.clamp(0.0, 1.0),
@@ -91,10 +94,10 @@ class Header extends StatelessWidget {
                       '${(adherence.clamp(0.0, 1.0) * 100).round()}%',
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: AppColors.scaffoldBg,
                     ),
                     progressColor: AppColors.primaryDark,
-                    backgroundColor: AppColors.divider,
+                    backgroundColor: AppColors.scaffoldBg,
                     circularStrokeCap: CircularStrokeCap.round,
                     animation: true,
                     animationDuration: 800,
@@ -112,13 +115,13 @@ class Header extends StatelessWidget {
                         'Daily Progress',
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppColors.scaffoldBg,
                       ),
                       const SizedBox(height: 4),
                       CustomText(
                         '$takenCount of $totalCount medications taken',
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: AppColors.scaffoldBg,
                       ),
                     ],
                   ),

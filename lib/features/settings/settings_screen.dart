@@ -140,7 +140,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         });
                         TopToast.showError(
                           context,
-                          'Failed to sync settings with the cloud.',
+                          'Failed to sync settings. Please check your internet connection and try again.',
                         );
                       }
                     }
@@ -162,7 +162,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () async {
                   final uri = Uri.parse(
-                    'mailto:shakirullahstudios@gmail.com?subject=DoseVault Feedback',
+                    'mailto:saotech.dev@gmail.com?subject=DoseVault Feedback',
                   );
                   try {
                     await launchUrl(uri);
@@ -209,10 +209,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               _SettingsTile(
                 icon: Icons.delete_forever_rounded,
-                iconBgColor: Colors.red.withValues(alpha: 0.1),
-                iconColor: Colors.red,
+                iconBgColor: AppColors.warning.withValues(alpha: 0.1),
+                iconColor: AppColors.warning,
                 title: 'Wipe My Data',
-                titleColor: Colors.red,
+                titleColor: AppColors.warning,
                 trailing: const Icon(Icons.chevron_right, color: Colors.red),
                 onTap: () {
                   final hasMeds = HiveService.getAllMedications().isNotEmpty;
@@ -262,7 +262,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     cancelText: 'Cancel',
                     actionText: 'Wipe Data',
                     loadingActionText: 'Wiping...',
-                    actionColor: Colors.red,
+                    actionColor: AppColors.warning,
                     onAction: (dialogContext) async {
                       try {
                         final supabase = Supabase.instance.client;

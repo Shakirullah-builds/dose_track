@@ -43,11 +43,8 @@ class TopToast {
   static void showError(BuildContext context, String message) {
     _dismiss();
     final entry = OverlayEntry(
-      builder: (_) => _TopToastWidget(
-        message: message,
-        isError: true,
-        onDismiss: _dismiss,
-      ),
+      builder: (_) =>
+          _TopToastWidget(message: message, isError: true, onDismiss: _dismiss),
     );
     _currentEntry = entry;
     Overlay.of(context).insert(entry);
@@ -127,12 +124,7 @@ class _TopToastWidgetState extends State<_TopToastWidget>
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0.0, -1.0),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     // Slide in
     _controller.forward();
@@ -162,11 +154,11 @@ class _TopToastWidgetState extends State<_TopToastWidget>
   @override
   Widget build(BuildContext context) {
     final bgColor = widget.isError
-        ? const Color(0xFFE53935) // Soft red
-        : const Color(0xFF2D3748); // Premium dark grey
+        ? AppColors.warning  // Deep orange
+        : AppColors.primary.withValues(alpha: 0.95); // Premium dark grey
 
     final glowColor = widget.isError
-        ? const Color(0xFFE53935).withValues(alpha: 0.3)
+        ? AppColors.warning.withValues(alpha: 0.3)
         : AppColors.primary.withValues(alpha: 0.2);
 
     return Positioned(
@@ -235,7 +227,7 @@ class _TopToastWidgetState extends State<_TopToastWidget>
                         ),
                         child: CustomText(
                           widget.undoLabel!,
-                          color: AppColors.accent,
+                          color: AppColors.scaffoldBg,
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),

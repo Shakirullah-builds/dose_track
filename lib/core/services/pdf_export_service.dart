@@ -75,7 +75,7 @@ class PdfExportService {
               style: pw.TextStyle(
                 fontSize: 24,
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromHex('#0396D8'),
+                color: PdfColor.fromHex('#2563EB'),
               ),
             ),
             pw.Text(
@@ -108,7 +108,7 @@ class PdfExportService {
         _statBlock(
           label: 'Total Doses Taken',
           value: taken.toString(),
-          color: PdfColor.fromHex('#0396D8'),
+          color: PdfColor.fromHex('#02563EB'),
         ),
         pw.SizedBox(width: 24),
         _statBlock(

@@ -103,17 +103,6 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       return;
     }
 
-    // final now = TimeOfDay.now();
-    // if (_selectedTime.hour < now.hour ||
-    //     (_selectedTime.hour == now.hour &&
-    //         _selectedTime.minute <= now.minute)) {
-    //   TopToast.showError(
-    //     context,
-    //     'Please select a future time so the alarm can trigger properly.',
-    //   );
-    //   return;
-    // }
-
     final dosage = double.tryParse(_dosageController.text.trim()) ?? 0;
 
     setState(() => _saving = true);
@@ -161,7 +150,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppColors.textPrimary,
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: const CustomText(
