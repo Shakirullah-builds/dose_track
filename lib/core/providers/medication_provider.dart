@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dose_vault/core/models/medication.dart';
 import 'package:dose_vault/core/services/hive_service.dart';
 import 'package:dose_vault/core/services/supabase_sync_service.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
 
 /// Holds the full medication list. Rebuild when meds are added/removed.
 class MedicationListNotifier extends Notifier<List<Medication>> {
@@ -13,6 +14,10 @@ class MedicationListNotifier extends Notifier<List<Medication>> {
   Future<void> addMedication(Medication med) async {
     await HiveService.addMedication(med);
     state = [...state, med];
+    
+    // Schedule local offline notification
+    ref.read(notificationServiceProvider).scheduleDoseReminder(med);
+    
     // Fire-and-forget background sync
     ref.read(supabaseSyncServiceProvider).syncMedicationsUp();
   }
@@ -20,6 +25,10 @@ class MedicationListNotifier extends Notifier<List<Medication>> {
   Future<void> updateMedication(Medication med) async {
     await HiveService.addMedication(med);
     state = state.map((m) => m.id == med.id ? med : m).toList();
+    
+    // Reschedule local offline notification
+    ref.read(notificationServiceProvider).scheduleDoseReminder(med);
+    
     // Fire-and-forget background sync
     ref.read(supabaseSyncServiceProvider).syncMedicationsUp();
   }

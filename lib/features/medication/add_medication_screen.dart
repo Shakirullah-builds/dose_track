@@ -1,6 +1,8 @@
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
 import 'package:dose_vault/core/widgets/top_toast.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dose_vault/features/widgets/battery_exemption_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,6 +130,33 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
       return;
     }
 
+    // Intercept for Android battery optimization permission
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      final isGranted = await Permission.ignoreBatteryOptimizations.isGranted;
+      if (!isGranted) {
+        if (!mounted) return;
+        
+        FocusScope.of(context).unfocus(); // Dismiss keyboard
+        
+        BatteryExemptionBottomSheet.show(
+          context,
+          onEnable: () async {
+            await Permission.ignoreBatteryOptimizations.request();
+            if (mounted) _executeSave();
+          },
+          onCancel: () {
+            if (mounted) _executeSave();
+          },
+        );
+        return;
+      }
+    }
+
+    _executeSave();
+  }
+
+  Future<void> _executeSave() async {
+    final name = _nameController.text.trim();
     final dosage = double.tryParse(_dosageController.text.trim()) ?? 0;
 
     setState(() => _saving = true);

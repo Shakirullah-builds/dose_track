@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:dose_vault/core/models/medication.dart';
 
 /// Centralized service for scheduling dose reminder notifications.
@@ -91,16 +93,33 @@ class NotificationService {
   ///
   /// Uses `zonedSchedule` with `matchDateTimeComponents: DateTimeComponents.time`
   /// which tells the OS to repeat the notification every day at that time.
-  /// Schedules a daily notification at the exact time stored in [med].
-  ///
-  /// Uses `zonedSchedule` with `matchDateTimeComponents: DateTimeComponents.time`
-  /// which tells the OS to repeat the notification every day at that time.
   ///
   /// The notification ID is derived from the medication's UUID hash so each
   /// med gets a unique, stable ID we can cancel later.
   Future<void> scheduleDoseReminder(Medication med) async {
-    // DEPRECATED: Local scheduling has been replaced by Supabase Edge Functions + FCM.
-    // The scheduling logic is removed to prevent conflicts with the new push engine.
+    final tz.TZDateTime scheduledTime = _nextInstanceOfTime(med.scheduledTime);
+    
+    await _plugin.zonedSchedule(
+      id: _notificationId(med.id),
+      title: 'Time for ${med.name}',
+      body: 'Dosage: ${med.dosage}',
+      scheduledDate: scheduledTime,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_dose_channel',
+          'Medication Reminders',
+          channelDescription: 'Reminders to take your scheduled medications',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: 'ic_notification',
+          color: Color(0xFF4A90D9),
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: med.id,
+    );
   }
 
   // ── Cancellation ────────────────────────────────────────────────────
@@ -125,28 +144,28 @@ class NotificationService {
   /// Computes the next occurrence of [timeStr] (format "HH:mm") as a
   /// TZDateTime. If the time has already passed today, it schedules for
   /// tomorrow — this prevents the "notification fires immediately" bug.
-  // tz.TZDateTime _nextInstanceOfTime(String timeStr) {
-  //   final parts = timeStr.split(':');
-  //   final hour = int.parse(parts[0]);
-  //   final minute = int.parse(parts[1]);
+  tz.TZDateTime _nextInstanceOfTime(String timeStr) {
+    final parts = timeStr.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
 
-  //   final now = tz.TZDateTime.now(tz.local);
-  //   var scheduled = tz.TZDateTime(
-  //     tz.local,
-  //     now.year,
-  //     now.month,
-  //     now.day,
-  //     hour,
-  //     minute,
-  //   );
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
 
-  //   // If time already passed today, push to tomorrow
-  //   if (scheduled.isBefore(now)) {
-  //     scheduled = scheduled.add(const Duration(days: 1));
-  //   }
+    // If time already passed today, push to tomorrow
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(const Duration(days: 1));
+    }
 
-  //   return scheduled;
-  // }
+    return scheduled;
+  }
 
   /// Generates a stable 32-bit int ID from the UUID string.
   /// Notification IDs must be int, so we use hashCode.

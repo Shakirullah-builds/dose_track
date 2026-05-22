@@ -1,4 +1,4 @@
-package com.shakirullah.dosevault
+package com.shakirullah.dose_vault
 
 import io.flutter.embedding.android.FlutterActivity
 

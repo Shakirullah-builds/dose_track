@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.shakirullah.dosevault"
+    namespace = "com.shakirullah.dose_vault"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
