@@ -140,8 +140,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
         
         BatteryExemptionBottomSheet.show(
           context,
-          onEnable: () async {
-            await Permission.ignoreBatteryOptimizations.request();
+          onEnable: () {
             if (mounted) _executeSave();
           },
           onCancel: () {

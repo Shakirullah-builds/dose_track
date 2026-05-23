@@ -88,10 +88,11 @@ serve(async (req) => {
     }
 
     // 6. Fire the sniper shots! 
-    const response = await admin.messaging().sendEach(messages);
+    // const response = await admin.messaging().sendEach(messages);
 
     return new Response(
-      JSON.stringify({ success: true, messagesSent: messages.length, details: response }),
+      // JSON.stringify({ success: true, messagesSent: messages.length, details: response }),
+      JSON.stringify({ success: true, message: 'FCM push temporarily disabled. Relying on local alarms.' }),
       { headers: { "Content-Type": "application/json" } }
     );
 

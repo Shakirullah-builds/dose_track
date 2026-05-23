@@ -101,8 +101,10 @@ class NotificationService {
     
     await _plugin.zonedSchedule(
       id: _notificationId(med.id),
-      title: 'Time for ${med.name}',
-      body: 'Dosage: ${med.dosage}',
+      title: '💊 Time for ${med.name} (${med.dosage.toString().replaceAll(RegExp(r'\.0$'), '')}${med.unit})',
+      body: (med.instructions != null && med.instructions!.trim().isNotEmpty)
+          ? 'Note: ${med.instructions}'
+          : 'Open DoseVault to log your dose.',
       scheduledDate: scheduledTime,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BatteryExemptionBottomSheet extends StatelessWidget {
   final VoidCallback onEnable;
@@ -115,9 +116,12 @@ class BatteryExemptionBottomSheet extends StatelessWidget {
             width: double.infinity,
             child: CustomElevatedButton(
               label: 'Enable Reliable Alarms',
-              onPressed: () {
-                Navigator.pop(context); // Close bottom sheet
-                onEnable(); // Trigger permission request
+              onPressed: () async {
+                await Permission.ignoreBatteryOptimizations.request();
+                if (context.mounted) {
+                  Navigator.pop(context); // Close bottom sheet
+                  onEnable(); // Trigger save logic
+                }
               },
             ),
           ),
