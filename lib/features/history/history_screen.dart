@@ -101,7 +101,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ? [
                 IconButton(
                   icon: const Icon(
-                    Icons.picture_as_pdf,
+                    Icons.picture_as_pdf_rounded,
                     color: AppColors.primary,
                   ),
                   tooltip: 'Export Report',

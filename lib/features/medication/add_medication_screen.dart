@@ -1,6 +1,7 @@
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/widgets/custom_elevated_button.dart';
 import 'package:dose_vault/core/widgets/top_toast.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:dose_vault/features/widgets/battery_exemption_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
@@ -267,6 +268,10 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                           child: CustomTextField(
                             controller: _dosageController,
                             keyboardType: TextInputType.number,
+                            maxLength: 4,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             hintText: '0',
                           ),
                         ),
@@ -327,7 +332,7 @@ class _AddMedicationScreenState extends ConsumerState<AddMedicationScreen> {
                     const SizedBox(height: 8),
                     CustomTextField(
                       controller: _instructionsController,
-                      maxLines: 4,
+                      maxLines: 3,
                       hintText: 'e.g., Take with food',
                     ),
                   ],

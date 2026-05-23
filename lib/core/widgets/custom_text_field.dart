@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -18,6 +19,8 @@ class CustomTextField extends StatelessWidget {
   final InputBorder? enabledBorder;
   final InputBorder? focusedBorder;
   final bool? autofocus;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
 
   const CustomTextField({
     super.key,
@@ -38,6 +41,8 @@ class CustomTextField extends StatelessWidget {
     this.enabledBorder,
     this.focusedBorder,
     this.autofocus = false,
+    this.inputFormatters,
+    this.maxLength,
   });
 
   @override
@@ -48,9 +53,11 @@ class CustomTextField extends StatelessWidget {
       textCapitalization: textCapitalization,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      maxLength: maxLength,
       onChanged: onChanged,
       focusNode: focusNode,
       style: style,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: hintStyle,
@@ -61,6 +68,7 @@ class CustomTextField extends StatelessWidget {
         contentPadding: contentPadding,
         enabledBorder: enabledBorder,
         focusedBorder: focusedBorder,
+        counterText: '',
       ),
     );
   }

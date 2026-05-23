@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Premium top toast notification using Flutter's native Overlay API.
 ///
@@ -85,7 +86,7 @@ class TopToast {
 // ANIMATED TOAST WIDGET (private to this file)
 // ═══════════════════════════════════════════════════════════════════════
 
-class _TopToastWidget extends StatefulWidget {
+class _TopToastWidget extends ConsumerStatefulWidget {
   final String message;
   final bool isError;
   final VoidCallback onDismiss;
@@ -103,10 +104,10 @@ class _TopToastWidget extends StatefulWidget {
   });
 
   @override
-  State<_TopToastWidget> createState() => _TopToastWidgetState();
+  ConsumerState<_TopToastWidget> createState() => _TopToastWidgetState();
 }
 
-class _TopToastWidgetState extends State<_TopToastWidget>
+class _TopToastWidgetState extends ConsumerState<_TopToastWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
