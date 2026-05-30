@@ -149,6 +149,7 @@ class NotificationService {
           priority: Priority.high,
           icon: 'ic_notification',
           color: Color(0xFF4A90D9),
+          
           // Custom sound from res/raw/dose_alarm.mp3
           sound: RawResourceAndroidNotificationSound('dose_alarm'),
           playSound: true,

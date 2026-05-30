@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dose_vault/core/constants/app_colors.dart';
-import 'package:dose_vault/core/services/hive_service.dart';
+import 'package:dose_vault/core/providers/medication_provider.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,7 +74,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    await HiveService.logDose(
+    await ref.read(doseLogListProvider.notifier).logDose(
       medicationId: _medData['id'] as String,
       status: 'taken',
     );
@@ -87,7 +87,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    await HiveService.logDose(
+    await ref.read(doseLogListProvider.notifier).logDose(
       medicationId: _medData['id'] as String,
       status: 'skipped',
     );
@@ -100,9 +100,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    // Log as missed (we use 'skipped' status with a note, since
+    // Log as missed (we use 'skipped' status since
     // the DoseLog model uses 'taken' or 'skipped' as the only statuses)
-    await HiveService.logDose(
+    await ref.read(doseLogListProvider.notifier).logDose(
       medicationId: _medData['id'] as String,
       status: 'skipped',
     );
@@ -115,10 +115,11 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
   @override
   Widget build(BuildContext context) {
     final name = _medData['name'] as String? ?? 'Medication';
-    final dosage = (_medData['dosage'] as num?)
-            ?.toDouble()
-            .toString()
-            .replaceAll(RegExp(r'\.0$'), '') ??
+    final dosage =
+        (_medData['dosage'] as num?)?.toDouble().toString().replaceAll(
+          RegExp(r'\.0$'),
+          '',
+        ) ??
         '';
     final unit = _medData['unit'] as String? ?? '';
     final instructions = _medData['instructions'] as String?;
@@ -149,9 +150,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                       strokeWidth: 4,
                       backgroundColor: Colors.white.withValues(alpha: 0.1),
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        progress > 0.3
-                            ? AppColors.accent
-                            : AppColors.warning,
+                        progress > 0.3 ? AppColors.accent : AppColors.warning,
                       ),
                     ),
                   ),
@@ -159,17 +158,10 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                   AnimatedBuilder(
                     animation: _pulseController,
                     builder: (context, child) {
-                      final scale =
-                          1.0 + (_pulseController.value * 0.08);
-                      return Transform.scale(
-                        scale: scale,
-                        child: child,
-                      );
+                      final scale = 1.0 + (_pulseController.value * 0.08);
+                      return Transform.scale(scale: scale, child: child);
                     },
-                    child: CustomText(
-                      '💊',
-                      fontSize: 64,
-                    ),
+                    child: CustomText('💊', fontSize: 64),
                   ),
                 ],
               ),
@@ -180,6 +172,8 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
               CustomText(
                 name,
                 fontSize: 28,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 textAlign: TextAlign.center,
@@ -198,6 +192,8 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
               if (instructions != null && instructions.trim().isNotEmpty) ...[
                 const SizedBox(height: 12),
                 CustomText(
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                   instructions,
                   fontSize: 15,
                   color: Colors.white.withValues(alpha: 0.5),
