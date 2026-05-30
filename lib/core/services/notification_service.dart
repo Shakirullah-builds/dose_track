@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dose_vault/features/notifications/full_screen_alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:dose_vault/core/models/medication.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Centralized service for scheduling dose reminder notifications.
 ///
@@ -13,8 +17,12 @@ import 'package:dose_vault/core/models/medication.dart';
 /// → Easy to swap implementations later (e.g., WorkManager for background).
 class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin;
+  String? _initialPayload;
 
   NotificationService(this._plugin);
+
+  String? get initialPayload => _initialPayload;
+  void clearInitialPayload() => _initialPayload = null;
 
   // ── Initialisation ──────────────────────────────────────────────────
 
@@ -37,14 +45,28 @@ class NotificationService {
 
     await _plugin.initialize(
       settings: initSettings,
-      // Tap handler — expand later if needed
+      // Tap handler
       onDidReceiveNotificationResponse: _onNotificationTap,
     );
+
+    // Retrieve notification that launched the app from terminated state
+    final notificationAppLaunchDetails =
+        await _plugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      _initialPayload =
+          notificationAppLaunchDetails?.notificationResponse?.payload;
+    }
   }
 
   void _onNotificationTap(NotificationResponse response) {
-    // TODO: Navigate to the correct dose card when tapped.
-    // For the MVP, simply opening the app is enough.
+    final payload = response.payload;
+    if (payload != null && payload.isNotEmpty) {
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => FullScreenAlarm(payload: payload),
+        ),
+      );
+    }
   }
 
   // ── Permissions ─────────────────────────────────────────────────────
@@ -98,7 +120,17 @@ class NotificationService {
   /// med gets a unique, stable ID we can cancel later.
   Future<void> scheduleDoseReminder(Medication med) async {
     final tz.TZDateTime scheduledTime = _nextInstanceOfTime(med.scheduledTime);
-    
+
+    // Encode medication details into the payload so the full-screen
+    // alarm screen can display the medication name, dosage, and unit.
+    final payload = jsonEncode({
+      'id': med.id,
+      'name': med.name,
+      'dosage': med.dosage,
+      'unit': med.unit,
+      'instructions': med.instructions,
+    });
+
     await _plugin.zonedSchedule(
       id: _notificationId(med.id),
       title: '💊 Time for ${med.name} (${med.dosage.toString().replaceAll(RegExp(r'\.0$'), '')}${med.unit})',
@@ -108,19 +140,28 @@ class NotificationService {
       scheduledDate: scheduledTime,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
-          'daily_dose_channel',
-          'Medication Reminders',
-          channelDescription: 'Reminders to take your scheduled medications',
+          // New channel ID — forces Android to create a fresh channel
+          // with our custom sound, bypassing the cached old channel.
+          'dose_alarm_channel_v2',
+          'Medication Alarms',
+          channelDescription: 'Time-critical medication dose reminders',
           importance: Importance.max,
           priority: Priority.high,
           icon: 'ic_notification',
           color: Color(0xFF4A90D9),
+          // Custom sound from res/raw/dose_alarm.mp3
+          sound: RawResourceAndroidNotificationSound('dose_alarm'),
+          playSound: true,
+          // Full-screen intent — takes over the lock screen
+          fullScreenIntent: true,
+          // Tell Android this is a time-critical alarm, not a social notification
+          category: AndroidNotificationCategory.alarm,
         ),
         iOS: DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: med.id,
+      payload: payload,
     );
   }
 

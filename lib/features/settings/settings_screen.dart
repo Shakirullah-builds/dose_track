@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dose_vault/core/services/hive_service.dart';
-import 'package:dose_vault/app_shell.dart';
+import 'package:dose_vault/features/onboarding/onboarding_screen.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:dose_vault/core/constants/app_colors.dart';
 
@@ -211,9 +211,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.delete_forever_rounded,
                 iconBgColor: AppColors.warning.withValues(alpha: 0.1),
                 iconColor: AppColors.warning,
-                title: 'Wipe My Data',
+                title: 'Delete My Data',
                 titleColor: AppColors.warning,
-                trailing: const Icon(Icons.chevron_right, color: Colors.red),
+                trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                 onTap: () {
                   final hasMeds = HiveService.getAllMedications().isNotEmpty;
                   final hasLogs = HiveService.getAllDoseLogs().isNotEmpty;
@@ -224,7 +224,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       builder: (context) => CupertinoAlertDialog(
                         title: const CustomText(
                           textAlign: TextAlign.center,
-                          'Nothing to Wipe',
+                          'Nothing to Delete',
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
@@ -233,7 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           padding: EdgeInsets.only(top: 8.0),
                           child: CustomText(
                             textAlign: TextAlign.center,
-                            'Your database is currently empty. There is no medication data or dose history to wipe.',
+                            'Your database is currently empty. There is no medication data or dose history to delete.',
                             fontSize: 13,
                             color: AppColors.textPrimary,
                           ),
@@ -260,8 +260,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     content:
                         'This will permanently delete all your medication data from this device and the cloud.',
                     cancelText: 'Cancel',
-                    actionText: 'Wipe Data',
-                    loadingActionText: 'Wiping...',
+                    actionText: 'Delete',
+                    loadingActionText: 'Deleting...',
                     actionColor: AppColors.warning,
                     onAction: (dialogContext) async {
                       try {
@@ -291,14 +291,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         // Step B (Local Wipe)
                         await HiveService.clearAll();
 
-                        // Step C (Identity Wipe)
+                        // Step C (Identity Wipe & Re-roll)
                         await supabase.auth.signOut();
+                        await supabase.auth.signInAnonymously();
+                        
+                        // Reset the onboarding flag
+                        final settingsBox = await Hive.openBox('settings');
+                        await settingsBox.put('has_seen_onboarding', false);
 
                         // Step D (Navigation Reset)
                         if (context.mounted) {
                           TopToast.show(context, 'Data wiped successfully');
                           Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (_) => const AppShell()),
+                            MaterialPageRoute(builder: (_) => const OnboardingScreen()),
                             (route) => false,
                           );
                         }
@@ -416,7 +421,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               width: 13,
                               height: 13,
                               child: CircularProgressIndicator(
-                                strokeWidth: 3,
+                                strokeWidth: 1.6,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.red,
                                 ),

@@ -1,4 +1,5 @@
 import 'package:dose_vault/core/constants/app_colors.dart';
+import 'package:dose_vault/core/widgets/bounce_tap.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +9,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 ///
 /// The old version was a single tall block with a centered ring.
 /// This version splits the header into two visual "boxes":
-/// 1. A greeting row (Today + date + avatar)
+/// 1. A greeting row (Today + date + notification bell)
 /// 2. A hero card with a compact side-by-side ring + label layout
 ///
 /// This feels more spacious and modern while keeping the same data props.
@@ -17,11 +18,15 @@ class Header extends StatelessWidget {
   final int takenCount;
   final int totalCount;
   final DateTime logicalDate;
+  final VoidCallback? onBellTap;
+  final bool hasMissedDoses;
   const Header({
     required this.adherence,
     required this.takenCount,
     required this.totalCount,
     required this.logicalDate,
+    this.onBellTap,
+    this.hasMissedDoses = false,
     super.key,
   });
 
@@ -56,16 +61,42 @@ class Header extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary,
-                ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: AppColors.scaffoldBg,
+              BounceTap(
+                onTap: onBellTap ?? () {},
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                      ),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: AppColors.primary,
+                        size: 24,
+                      ),
+                    ),
+                    // Red badge dot — only visible when there are missed doses
+                    if (hasMissedDoses)
+                      Positioned(
+                        top: 6,
+                        right: 8,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: AppColors.warning,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.scaffoldBg,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],

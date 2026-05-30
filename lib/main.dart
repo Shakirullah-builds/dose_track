@@ -77,6 +77,7 @@ void main() async {
           notificationServiceProvider.overrideWithValue(notificationService),
         ],
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: 'DoseVault',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,

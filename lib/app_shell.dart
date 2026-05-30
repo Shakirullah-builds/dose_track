@@ -10,6 +10,8 @@ import 'package:dose_vault/core/services/supabase_sync_service.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:dose_vault/core/widgets/bounce_tap.dart';
 import 'package:dose_vault/features/settings/settings_screen.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
+import 'package:dose_vault/features/notifications/full_screen_alarm.dart';
 
 /// The main app shell — hosts bottom nav, FAB, and screen switching.
 class AppShell extends ConsumerStatefulWidget {
@@ -31,6 +33,18 @@ class _AppShellState extends ConsumerState<AppShell> {
     super.initState();
     // Run the down-sync without blocking the first frame render
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Check for launch notification payload
+      final notificationService = ref.read(notificationServiceProvider);
+      final initialPayload = notificationService.initialPayload;
+      if (initialPayload != null && initialPayload.isNotEmpty) {
+        notificationService.clearInitialPayload();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FullScreenAlarm(payload: initialPayload),
+          ),
+        );
+      }
+
       ref.read(supabaseSyncServiceProvider).syncDownOnLaunch(
         ref,
         onComplete: () {
