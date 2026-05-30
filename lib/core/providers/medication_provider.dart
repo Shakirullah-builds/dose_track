@@ -64,6 +64,19 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
     state = [...HiveService.getDoseLogsForDate(DateTime.now())];
     // Fire-and-forget background sync
     ref.read(supabaseSyncServiceProvider).syncLogsUp();
+
+    // Centralized active notification cleanup & daily rescheduling
+    try {
+      final medications = ref.read(medicationListProvider);
+      final medication = medications.where((m) => m.id == medicationId).firstOrNull;
+      if (medication != null) {
+        final notificationService = ref.read(notificationServiceProvider);
+        await notificationService.cancelReminder(medicationId); // Clear active status bar notification banner
+        await notificationService.scheduleDoseReminder(medication); // Auto-reschedules for tomorrow
+      }
+    } catch (e) {
+      // Fail-silent to ensure database logging and UI state updates remain uninterrupted
+    }
   }
 
   Future<void> deleteLog(String logId) async {
