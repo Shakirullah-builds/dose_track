@@ -52,7 +52,9 @@ final medicationListProvider =
 class DoseLogListNotifier extends Notifier<List<DoseLog>> {
   @override
   List<DoseLog> build() {
-    return HiveService.getDoseLogsForDate(DateTime.now());
+    return HiveService.getDoseLogsForDate(
+      HiveService.getLogicalDate(DateTime.now()),
+    );
   }
 
   Future<void> logDose({
@@ -61,7 +63,11 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
   }) async {
     await HiveService.logDose(medicationId: medicationId, status: status);
     // Refresh to get the updated log with its generated ID from Hive, or we can just pull fresh
-    state = [...HiveService.getDoseLogsForDate(DateTime.now())];
+    state = [
+      ...HiveService.getDoseLogsForDate(
+        HiveService.getLogicalDate(DateTime.now()),
+      ),
+    ];
     // Fire-and-forget background sync
     ref.read(supabaseSyncServiceProvider).syncLogsUp();
 
@@ -94,7 +100,9 @@ class DoseLogListNotifier extends Notifier<List<DoseLog>> {
   }
 
   void refresh() {
-    state = HiveService.getDoseLogsForDate(DateTime.now());
+    state = HiveService.getDoseLogsForDate(
+      HiveService.getLogicalDate(DateTime.now()),
+    );
   }
 }
 

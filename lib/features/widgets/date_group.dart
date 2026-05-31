@@ -1,5 +1,6 @@
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/models/medication.dart';
+import 'package:dose_vault/core/services/hive_service.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:dose_vault/features/widgets/history_tile.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,10 @@ class DateGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isToday = _isToday(date);
-    final label = isToday ? 'Today' : DateFormat('EEEE, MMM d').format(date);
+    final isYesterday = _isYesterday(date);
+    final label = isToday
+        ? 'Today'
+        : (isYesterday ? 'Yesterday' : DateFormat('EEEE, MMM d').format(date));
     final takenCount = logs.where((l) => l.status == 'taken').length;
 
     return Column(
@@ -62,7 +66,17 @@ class DateGroup extends ConsumerWidget {
   }
 
   bool _isToday(DateTime d) {
-    final now = DateTime.now();
-    return d.year == now.year && d.month == now.month && d.day == now.day;
+    final logicalToday = HiveService.getLogicalDate(DateTime.now());
+    return d.year == logicalToday.year &&
+        d.month == logicalToday.month &&
+        d.day == logicalToday.day;
+  }
+
+  bool _isYesterday(DateTime d) {
+    final logicalToday = HiveService.getLogicalDate(DateTime.now());
+    final logicalYesterday = logicalToday.subtract(const Duration(days: 1));
+    return d.year == logicalYesterday.year &&
+        d.month == logicalYesterday.month &&
+        d.day == logicalYesterday.day;
   }
 }

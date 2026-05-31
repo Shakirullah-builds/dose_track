@@ -117,10 +117,23 @@ class HistoryTile extends StatelessWidget {
                     color: AppColors.textPrimary,
                   ),
                 if (actionStr.isNotEmpty)
-                  CustomText(
-                    '${isTaken ? "Taken at" : "Skipped at"}: $actionStr',
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomText(
+                        '${isTaken ? "Taken at" : "Skipped at"}: $actionStr',
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                      if (log.actionTime != null && log.actionTime!.hour < 3) ...[
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.nightlight_round,
+                          size: 11,
+                          color: Colors.amber,
+                        ),
+                      ],
+                    ],
                   ),
               ],
             ),
