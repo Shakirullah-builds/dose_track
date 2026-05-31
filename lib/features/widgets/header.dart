@@ -18,15 +18,13 @@ class Header extends StatelessWidget {
   final int takenCount;
   final int totalCount;
   final DateTime logicalDate;
-  final VoidCallback? onBellTap;
-  final bool hasMissedDoses;
+  final VoidCallback? onAiTap;
   const Header({
     required this.adherence,
     required this.takenCount,
     required this.totalCount,
     required this.logicalDate,
-    this.onBellTap,
-    this.hasMissedDoses = false,
+    this.onAiTap,
     super.key,
   });
 
@@ -62,41 +60,19 @@ class Header extends StatelessWidget {
                 ],
               ),
               BounceTap(
-                onTap: onBellTap ?? () {},
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                      ),
-                      child: const Icon(
-                        Icons.notifications_outlined,
-                        color: AppColors.primary,
-                        size: 24,
-                      ),
-                    ),
-                    // Red badge dot — only visible when there are missed doses
-                    if (hasMissedDoses)
-                      Positioned(
-                        top: 6,
-                        right: 8,
-                        child: Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: AppColors.warning,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.scaffoldBg,
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                onTap: onAiTap ?? () {},
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome_rounded,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
                 ),
               ),
             ],

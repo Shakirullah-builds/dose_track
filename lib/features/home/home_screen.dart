@@ -18,7 +18,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dose_vault/features/medication/add_medication_screen.dart'
     as dose_vault_add_medication;
 import 'package:dose_vault/features/medication/upcoming_medications_screen.dart';
-import 'package:dose_vault/features/notifications/notification_history_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -257,24 +256,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           takenCount: takenCount,
                           totalCount: totalMeds,
                           logicalDate: logicalDate,
-                          hasMissedDoses: upcoming.any((med) {
-                            // Check if any upcoming med's scheduled time has already passed
-                            final parts = med.scheduledTime.split(':');
-                            final scheduledToday = DateTime(
-                              logicalDate.year,
-                              logicalDate.month,
-                              logicalDate.day,
-                              int.parse(parts[0]),
-                              int.parse(parts[1]),
-                            );
-                            return now.isAfter(scheduledToday);
-                          }),
-                          onBellTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    const NotificationHistoryScreen(),
-                              ),
+                          onAiTap: () {
+                            TopToast.show(
+                              context,
+                              "DoseVault AI Wellness Assistant 🤖 coming soon!",
                             );
                           },
                         ),
