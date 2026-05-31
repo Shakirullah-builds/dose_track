@@ -62,6 +62,16 @@ class NotificationService {
   void _onNotificationTap(NotificationResponse response) {
     final payload = response.payload;
     if (payload != null && payload.isNotEmpty) {
+      try {
+        final data = jsonDecode(payload) as Map<String, dynamic>;
+        final isMissed = data['isMissed'] as bool? ?? false;
+        if (isMissed) {
+          // Swipe-proof missed dose alerts should just open the app normally,
+          // without pushing the full-screen alarm overlay takeover.
+          return;
+        }
+      } catch (_) {}
+
       navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => FullScreenAlarm(payload: payload),
@@ -168,6 +178,50 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
+      payload: payload,
+    );
+  }
+
+  /// Displays an ongoing, swipe-proof notification banner for missed doses.
+  /// Tapping this banner opens the app normally rather than launching the alarm overlay.
+  Future<void> showPersistentMissedDoseAlert(Medication med) async {
+    final payload = jsonEncode({
+      'id': med.id,
+      'name': med.name,
+      'dosage': med.dosage,
+      'unit': med.unit,
+      'instructions': med.instructions,
+      'isMissed': true, // Bypasses the full-screen takeover on tap
+    });
+
+    await _plugin.show(
+      id: _notificationId(med.id),
+      title: '⚠️ Missed Dose: ${med.name} (${med.dosage.toString().replaceAll(RegExp(r'\.0$'), '')}${med.unit})',
+      body: (med.instructions != null && med.instructions!.trim().isNotEmpty)
+          ? 'Note: ${med.instructions}'
+          : 'Tap to open DoseVault and log your dose.',
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          'dose_alarm_channel_v3',
+          'Medication Alarms',
+          channelDescription: 'Time-critical medication dose reminders',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: 'ic_notification',
+          color: const Color(0xFFFF6B6B), // Alert coral-red
+          
+          // Make it swipe-proof and persistent
+          ongoing: true,
+          autoCancel: false,
+          
+          // Quiet static presence (no alarm loop sound)
+          playSound: false,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentSound: false,
+        ),
+      ),
       payload: payload,
     );
   }

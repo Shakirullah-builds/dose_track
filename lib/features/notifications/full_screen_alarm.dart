@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:dose_vault/core/constants/app_colors.dart';
 import 'package:dose_vault/core/providers/medication_provider.dart';
+import 'package:dose_vault/core/services/notification_service.dart';
 import 'package:dose_vault/core/widgets/bounce_tap.dart';
 import 'package:dose_vault/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
   late final Map<String, dynamic> _medData;
   late final AnimationController _pulseController;
 
-  int _secondsRemaining = 60;
+  int _secondsRemaining = 180; // 3-minute limit
   Timer? _countdownTimer;
   bool _hasActed = false;
 
@@ -48,7 +49,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
 
-    // Start the 60-second auto-dismiss countdown
+    // Start the 180-second auto-dismiss countdown
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 1) {
         timer.cancel();
@@ -97,11 +98,22 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    // Log as missed (we use 'skipped' status since
-    // the DoseLog model uses 'taken' or 'skipped' as the only statuses)
-    await ref
-        .read(doseLogListProvider.notifier)
-        .logDose(medicationId: _medData['id'] as String, status: 'skipped');
+    final medId = _medData['id'] as String;
+
+    try {
+      // 1. Cancel the active ringing notification to stop the looping sound
+      final notificationService = ref.read(notificationServiceProvider);
+      await notificationService.cancelReminder(medId);
+
+      // 2. Fetch the full Medication object from the provider to issue the persistent tray alert
+      final medications = ref.read(medicationListProvider);
+      final medication = medications.where((m) => m.id == medId).firstOrNull;
+      if (medication != null) {
+        await notificationService.showPersistentMissedDoseAlert(medication);
+      }
+    } catch (_) {
+      // Fail-silent to ensure page popping and UX remain uninterrupted
+    }
 
     if (mounted) Navigator.of(context).pop();
   }
@@ -122,7 +134,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     final now = DateFormat('h:mm a').format(DateTime.now());
 
     // Countdown progress (1.0 = full, 0.0 = expired)
-    final progress = _secondsRemaining / 60;
+    final progress = _secondsRemaining / 180;
     final isWarningState = _secondsRemaining < 15;
     final activeColor = isWarningState ? AppColors.missed : AppColors.primary;
 
