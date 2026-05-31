@@ -197,9 +197,7 @@ class NotificationService {
     await _plugin.show(
       id: _notificationId(med.id),
       title: '⚠️ Missed Dose: ${med.name} (${med.dosage.toString().replaceAll(RegExp(r'\.0$'), '')}${med.unit})',
-      body: (med.instructions != null && med.instructions!.trim().isNotEmpty)
-          ? 'Note: ${med.instructions}'
-          : 'Tap to open DoseVault and log your dose.',
+      body: 'Tap to open DoseVault and log your dose.',
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           'dose_alarm_channel_v3',
