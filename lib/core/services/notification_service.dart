@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dose_vault/features/notifications/full_screen_alarm.dart';
 import 'package:flutter/material.dart';
@@ -138,27 +139,32 @@ class NotificationService {
           ? 'Note: ${med.instructions}'
           : 'Open DoseVault to log your dose.',
       scheduledDate: scheduledTime,
-      notificationDetails: const NotificationDetails(
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           // New channel ID — forces Android to create a fresh channel
           // with our custom sound, bypassing the cached old channel.
-          'dose_alarm_channel_v2',
+          'dose_alarm_channel_v3',
           'Medication Alarms',
           channelDescription: 'Time-critical medication dose reminders',
           importance: Importance.max,
           priority: Priority.high,
           icon: 'ic_notification',
-          color: Color(0xFF4A90D9),
+          color: const Color(0xFF4A90D9),
           
           // Custom sound from res/raw/dose_alarm.mp3
-          sound: RawResourceAndroidNotificationSound('dose_alarm'),
+          sound: const RawResourceAndroidNotificationSound('dose_alarm'),
           playSound: true,
           // Full-screen intent — takes over the lock screen
           fullScreenIntent: true,
           // Tell Android this is a time-critical alarm, not a social notification
           category: AndroidNotificationCategory.alarm,
+          // Treat as an alarm for audio focus and routing
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+          // Looping (insistent) flag: 4 corresponds to native Android's FLAG_INSISTENT.
+          // This will loop the notification sound continuously until clicked or dismissed.
+          additionalFlags: Int32List.fromList(<int>[4]),
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: const DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,

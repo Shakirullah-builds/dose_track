@@ -73,10 +73,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    await ref.read(doseLogListProvider.notifier).logDose(
-      medicationId: _medData['id'] as String,
-      status: 'taken',
-    );
+    await ref
+        .read(doseLogListProvider.notifier)
+        .logDose(medicationId: _medData['id'] as String, status: 'taken');
 
     if (mounted) Navigator.of(context).pop();
   }
@@ -86,10 +85,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
     _hasActed = true;
     _countdownTimer?.cancel();
 
-    await ref.read(doseLogListProvider.notifier).logDose(
-      medicationId: _medData['id'] as String,
-      status: 'skipped',
-    );
+    await ref
+        .read(doseLogListProvider.notifier)
+        .logDose(medicationId: _medData['id'] as String, status: 'skipped');
 
     if (mounted) Navigator.of(context).pop();
   }
@@ -101,10 +99,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
 
     // Log as missed (we use 'skipped' status since
     // the DoseLog model uses 'taken' or 'skipped' as the only statuses)
-    await ref.read(doseLogListProvider.notifier).logDose(
-      medicationId: _medData['id'] as String,
-      status: 'skipped',
-    );
+    await ref
+        .read(doseLogListProvider.notifier)
+        .logDose(medicationId: _medData['id'] as String, status: 'skipped');
 
     if (mounted) Navigator.of(context).pop();
   }
@@ -114,10 +111,11 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
   @override
   Widget build(BuildContext context) {
     final name = _medData['name'] as String? ?? 'Medication';
-    final dosage = (_medData['dosage'] as num?)
-            ?.toDouble()
-            .toString()
-            .replaceAll(RegExp(r'\.0$'), '') ??
+    final dosage =
+        (_medData['dosage'] as num?)?.toDouble().toString().replaceAll(
+          RegExp(r'\.0$'),
+          '',
+        ) ??
         '';
     final unit = _medData['unit'] as String? ?? '';
     final instructions = _medData['instructions'] as String?;
@@ -195,7 +193,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                               value: progress,
                               strokeWidth: 5,
                               backgroundColor: AppColors.ringTrack,
-                              valueColor: AlwaysStoppedAnimation<Color>(activeColor),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                activeColor,
+                              ),
                             ),
                           ),
 
@@ -204,7 +204,8 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                             animation: _pulseController,
                             builder: (context, child) {
                               final translateY = _pulseController.value * -6.0;
-                              final scale = 1.0 + (_pulseController.value * 0.05);
+                              final scale =
+                                  1.0 + (_pulseController.value * 0.05);
                               return Transform.translate(
                                 offset: Offset(0, translateY),
                                 child: Transform.scale(
@@ -216,7 +217,10 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter: ImageFilter.blur(
+                                  sigmaX: 10,
+                                  sigmaY: 10,
+                                ),
                                 child: Container(
                                   width: 110,
                                   height: 110,
@@ -224,12 +228,16 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                                     color: Colors.white.withValues(alpha: 0.6),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.8),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.8,
+                                      ),
                                       width: 1.5,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.04),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.04,
+                                        ),
                                         blurRadius: 16,
                                         offset: const Offset(0, 4),
                                       ),
@@ -264,7 +272,7 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                               color: Colors.white.withValues(alpha: 0.6),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.8),
+                                color: AppColors.primary.withValues(alpha: 0.4),
                                 width: 1.5,
                               ),
                               boxShadow: [
@@ -326,10 +334,14 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: AppColors.warning.withValues(alpha: 0.06),
+                                      color: AppColors.warning.withValues(
+                                        alpha: 0.06,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: AppColors.warning.withValues(alpha: 0.15),
+                                        color: AppColors.warning.withValues(
+                                          alpha: 0.15,
+                                        ),
                                         width: 1,
                                       ),
                                     ),
@@ -366,9 +378,12 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                       CustomText(
                         'Auto-dismiss in ${_secondsRemaining}s',
                         fontSize: 13,
-                        color: isWarningState ? AppColors.missed : AppColors.textSecondary,
-                        fontWeight:
-                            isWarningState ? FontWeight.bold : FontWeight.normal,
+                        color: isWarningState
+                            ? AppColors.missed
+                            : AppColors.textSecondary,
+                        fontWeight: isWarningState
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
 
                       const Spacer(flex: 4),
@@ -414,7 +429,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                                   borderRadius: BorderRadius.circular(16),
                                   gradient: const LinearGradient(
                                     colors: [
-                                      Color(0xFF26C6A0), // AppColors.taken (teal green)
+                                      Color(
+                                        0xFF26C6A0,
+                                      ), // AppColors.taken (teal green)
                                       Color(0xFF2EE5B6), // Vibrancy boost
                                     ],
                                     begin: Alignment.topLeft,
@@ -422,7 +439,9 @@ class _FullScreenAlarmState extends ConsumerState<FullScreenAlarm>
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFF26C6A0).withValues(alpha: 0.25),
+                                      color: const Color(
+                                        0xFF26C6A0,
+                                      ).withValues(alpha: 0.25),
                                       blurRadius: 16,
                                       offset: const Offset(0, 6),
                                     ),
