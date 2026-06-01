@@ -257,10 +257,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           totalCount: totalMeds,
                           logicalDate: logicalDate,
                           onAiTap: () {
-                            TopToast.show(
-                              context,
-                              "DoseVault AI Wellness Assistant 🤖 coming soon!",
-                            );
+                            TopToast.show(context, "AI Wellness Assistant coming soon! 🤖");
                           },
                         ),
                         Expanded(
